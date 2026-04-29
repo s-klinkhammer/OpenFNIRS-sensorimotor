@@ -1,0 +1,25 @@
+# Raw participant data — gitignored by default (kept out of the repo).
+# `public/data/` (the precomputed bundle that the dashboard reads) IS committed.
+/data/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.env
+.ipynb_checkpoints/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~
+
+# Tooling
+.claude/
+
+# Misc
+*.tyt
+results/

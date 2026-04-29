@@ -1,0 +1,19 @@
+name: respra
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - numpy
+  - scipy
+  - pandas
+  - scikit-learn
+  - matplotlib
+  - seaborn
+  - tqdm
+  - joblib
+  - pip
+  - pip:
+    - pyriemann
+    - torch
+    - spd_learn

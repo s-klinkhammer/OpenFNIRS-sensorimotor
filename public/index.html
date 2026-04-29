@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>fNIRS Motor Task — Dataset Explorer</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+<style>
+:root{
+  --bg:#1a1a1c; --bg-2:#242426; --bg-3:#2e2e30;
+  --panel:rgba(255,255,255,0.04); --panel-2:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.08); --border-strong:rgba(255,255,255,0.14);
+  --text:#f5f5f7; --text-dim:rgba(235,235,245,0.6); --text-mute:rgba(235,235,245,0.36);
+  --accent:#0a84ff; --accent-2:#64d2ff;
+  --hbo:#ff453a; --hbr:#0a84ff;
+  --green:#30d158; --orange:#ff9f0a; --purple:#bf5af2;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Inter,system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,monospace;
+}
+:root[data-theme="light"]{
+  --bg:#fafafa; --bg-2:#fff; --bg-3:#f0f0f3;
+  --panel:rgba(0,0,0,0.035); --panel-2:rgba(0,0,0,0.06);
+  --border:rgba(0,0,0,0.08); --border-strong:rgba(0,0,0,0.14);
+  --text:#1d1d1f; --text-dim:rgba(60,60,67,0.6); --text-mute:rgba(60,60,67,0.36);
+  --accent:#0066cc; --hbo:#d70015; --hbr:#0040dd;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--font);letter-spacing:-0.01em;-webkit-font-smoothing:antialiased;}
+::selection{background:rgba(10,132,255,0.35);}
+
+/* Landing overlay */
+.landing{position:fixed; inset:0; z-index:100; background:var(--bg); overflow:auto;
+  display:flex; flex-direction:column; transition:opacity 360ms cubic-bezier(.4,0,.2,1);
+}
+.landing.hiding{opacity:0; pointer-events:none;}
+.landing-nav{display:flex; align-items:center; gap:14px; padding:18px 34px; font-size:13px;}
+.landing-nav .um-logo{height:60px; width:auto; display:block; flex-shrink:0; filter:brightness(0) invert(1); opacity:0.94;}
+:root[data-theme="light"] .landing-nav .um-logo{filter:none; opacity:1;}
+.landing-nav .brand{font-weight:600; letter-spacing:-0.01em;}
+.landing-nav .sep{color:var(--text-mute);}
+.landing-nav .ver{color:var(--text-dim); font-family:var(--mono); font-size:11.5px;}
+.landing-nav .push{flex:1;}
+.landing-nav a{color:var(--text-dim); text-decoration:none; padding:5px 10px; border-radius:6px; transition:all 120ms; font-size:12.5px; cursor:pointer;}
+.landing-nav a:hover{color:var(--text); background:var(--panel-2);}
+
+.landing-hero{flex:1; display:grid; grid-template-columns: 1.15fr 1fr; gap:48px; align-items:center; padding:20px 64px 60px; min-height:580px; max-width:1440px; margin:0 auto; width:100%;}
+.lh-body{min-width:0;}
+.lh-eyebrow{display:inline-flex; align-items:center; gap:8px; padding:4px 11px 4px 9px; border-radius:999px; background:var(--panel); border:1px solid var(--border); font-size:11px; font-weight:600; letter-spacing:0.04em; color:var(--text-dim); text-transform:uppercase; margin-bottom:20px;}
+.lh-eyebrow i{width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow:0 0 0 3px rgba(48,209,88,0.15);}
+.lh-body h1{margin:0; font-size:64px; font-weight:700; line-height:1.02; letter-spacing:-0.035em; max-width:14ch;}
+.lh-body h1 em{font-style:normal; background:linear-gradient(135deg, var(--hbo) 0%, var(--hbr) 100%); -webkit-background-clip:text; background-clip:text; color:transparent;}
+.lh-body p.lead{margin:22px 0 0; color:var(--text-dim); font-size:17px; line-height:1.5; max-width:56ch; letter-spacing:-0.005em;}
+.lh-cta{display:flex; gap:10px; margin-top:32px;}
+.lh-btn{appearance:none; border:none; cursor:pointer; padding:11px 20px; border-radius:999px; font-family:inherit; font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:8px; transition:all 150ms; letter-spacing:-0.005em;}
+.lh-btn.primary{background:var(--text); color:var(--bg);}
+.lh-btn.primary:hover{transform:translateY(-1px); box-shadow:0 8px 24px -8px rgba(255,255,255,0.2);}
+.lh-btn.ghost{background:var(--panel-2); color:var(--text); border:1px solid var(--border);}
+.lh-btn.ghost:hover{background:var(--panel); border-color:var(--border-strong);}
+.lh-kbd{font-family:var(--mono); font-size:11px; padding:2px 6px; border-radius:4px; background:rgba(255,255,255,0.08); margin-left:6px; color:var(--text-dim); font-weight:500;}
+
+.lh-stats{display:grid; grid-template-columns:repeat(5, auto); gap:34px; margin-top:44px; padding-top:32px; border-top:1px solid var(--border); width:fit-content; max-width:100%;}
+.lh-stat .n{font-size:26px; font-weight:700; letter-spacing:-0.02em; font-variant-numeric:tabular-nums; line-height:1;}
+.lh-stat .l{font-size:11px; color:var(--text-mute); text-transform:uppercase; letter-spacing:0.08em; margin-top:6px; font-weight:500;}
+
+.lh-art{position:relative; aspect-ratio:1; width:100%; max-width:480px; margin-left:auto; border-radius:20px; overflow:hidden;
+  background: radial-gradient(circle at 30% 25%, rgba(255,69,58,0.25), transparent 55%),
+              radial-gradient(circle at 75% 75%, rgba(10,132,255,0.28), transparent 55%),
+              linear-gradient(135deg, #1d1d1f 0%, #111113 100%);
+  border:1px solid var(--border-strong);
+  box-shadow: 0 30px 80px -30px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.lh-art svg{position:absolute; inset:0; width:100%; height:100%;}
+.lh-art .caption{position:absolute; left:20px; bottom:18px; right:20px; font-size:11px; color:rgba(235,235,245,0.55); letter-spacing:0.01em; font-family:var(--mono); display:flex; justify-content:space-between; align-items:flex-end;}
+.lh-art .caption b{color:rgba(255,255,255,0.95); font-weight:500;}
+
+.lh-meta{padding:0 64px 34px; max-width:1440px; margin:0 auto; width:100%;}
+.lh-meta-inner{display:grid; grid-template-columns:repeat(4, 1fr); gap:16px;}
+.lh-meta-card{padding:18px 20px; border:1px solid var(--border); border-radius:12px; background:var(--panel);}
+.lh-meta-card h4{margin:0 0 8px; font-size:10.5px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-mute);}
+.lh-meta-card .body{font-size:13px; line-height:1.5; color:var(--text); letter-spacing:-0.005em;}
+.lh-meta-card .body b{font-weight:600;}
+.lh-meta-card .body code{font-family:var(--mono); font-size:11.5px; color:var(--text-dim);}
+
+.lh-byline{margin-top:20px; max-width:80ch;}
+.authors-line{font-size:13px; color:var(--text); line-height:1.55; margin:0 0 6px; letter-spacing:-0.005em;}
+.authors-line b{font-weight:600;}
+.authors-line sup{font-size:9px; color:var(--text-dim); margin-left:1px;}
+.authors-line .corr{color:var(--text-mute); font-size:11px; margin-left:8px; white-space:nowrap;}
+.authors-line .corr a{color:var(--text-dim); text-decoration:none;}
+.authors-line .corr a:hover{color:var(--text);}
+.affiliations-wrap{margin-top:6px;}
+.affiliations-wrap > summary{cursor:pointer; font-size:11.5px; color:var(--text-dim); padding:4px 0; user-select:none; list-style:none; display:inline-flex; align-items:center; gap:8px; transition:color 120ms;}
+.affiliations-wrap > summary::-webkit-details-marker{display:none;}
+.affiliations-wrap > summary::before{content:''; display:inline-block; width:6px; height:6px; border-right:1.4px solid currentColor; border-bottom:1.4px solid currentColor; transform:rotate(-45deg); transition:transform 180ms cubic-bezier(.4,0,.2,1); margin-bottom:2px;}
+.affiliations-wrap[open] > summary::before{transform:rotate(45deg); margin-bottom:0; margin-top:2px;}
+.affiliations-wrap > summary:hover{color:var(--text);}
+.affiliations-wrap[open] > summary{color:var(--text); margin-bottom:8px;}
+.affiliations{list-style:none; padding:0; margin:0; font-size:11.5px; color:var(--text-dim); line-height:1.6; max-width:90ch;}
+.affiliations li{padding-left:0; margin-bottom:3px;}
+.affiliations sup{font-size:9px; color:var(--text-mute); margin-right:5px; font-weight:600;}
+
+@media (max-width:1080px){
+  .landing-hero{grid-template-columns:1fr; gap:32px; padding:20px 34px 40px;}
+  .lh-art{max-width:360px; margin:0 auto;}
+  .lh-body h1{font-size:44px;}
+  .lh-stats{grid-template-columns:repeat(3, auto); gap:24px;}
+  .lh-meta{padding:0 34px 34px;}
+  .lh-meta-inner{grid-template-columns:repeat(2, 1fr);}
+}
+
+.app{display:grid; grid-template-columns: 56px 1fr 320px; height:100vh; min-height:780px; overflow:hidden;}
+
+/* Icon rail */
+.rail{background:var(--bg-2); border-right:1px solid var(--border); display:flex; flex-direction:column; align-items:center; padding:14px 0; gap:4px;}
+.rail .logo{width:30px; height:30px; border-radius:8px; background:linear-gradient(135deg,var(--hbo),var(--hbr)); margin-bottom:10px; position:relative; cursor:pointer; transition:transform 120ms;}
+.rail .logo:hover{transform:scale(1.08);}
+.rail .logo::after{content:''; position:absolute; inset:7px; border:1.5px solid #fff; border-radius:50%; border-bottom-color:transparent;}
+.rail button{width:36px; height:36px; display:flex; align-items:center; justify-content:center; border:none; background:transparent; color:var(--text-dim); border-radius:8px; cursor:pointer; transition:all 120ms;}
+.rail button:hover{background:var(--panel-2); color:var(--text);}
+.rail button.active{background:var(--accent); color:#fff;}
+.rail .spacer{flex:1;}
+.rail .divider{width:24px; height:1px; background:var(--border); margin:6px 0;}
+
+/* Main */
+.main{display:flex; flex-direction:column; overflow:hidden; background:var(--bg);}
+.topbar{display:flex; align-items:center; gap:14px; padding:12px 22px; border-bottom:1px solid var(--border); min-height:56px;}
+.topbar .crumb{color:var(--text-dim); font-size:13px;}
+.topbar .crumb b{color:var(--text); font-weight:600;}
+.topbar .crumb::before{content:''; width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow:0 0 0 3px rgba(48,209,88,0.2); display:inline-block; margin-right:10px; vertical-align:middle;}
+.topbar .spacer{flex:1;}
+.topbar .home-btn{appearance:none; border:1px solid var(--border); background:var(--panel); color:var(--text-dim); cursor:pointer; padding:6px 12px 6px 10px; border-radius:7px; font-family:inherit; font-size:12px; font-weight:500; display:inline-flex; align-items:center; gap:6px; transition:all 120ms;}
+.topbar .home-btn:hover{background:var(--panel-2); color:var(--text); border-color:var(--border-strong);}
+.iconbtn{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border); background:var(--panel); border-radius:7px; color:var(--text-dim); cursor:pointer;}
+.iconbtn:hover{background:var(--panel-2); color:var(--text);}
+
+/* Content */
+.content{flex:1; overflow-y:auto; padding:18px 22px 22px;}
+.content::-webkit-scrollbar{width:8px;} .content::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1); border-radius:4px;}
+
+.card{background:var(--panel); border:1px solid var(--border); border-radius:12px; overflow:hidden;}
+.card-h{display:flex; align-items:center; gap:12px; padding:12px 16px; border-bottom:1px solid var(--border);}
+.card-h h3{margin:0; font-size:13px; font-weight:600;}
+.card-h .meta{margin-left:auto; color:var(--text-dim); font-size:11.5px; font-variant-numeric:tabular-nums; font-family:var(--mono);}
+
+/* Channel grid */
+.pair-grid{display:grid; grid-template-columns:repeat(13, 1fr); gap:4px; margin-bottom:14px;}
+.pair{position:relative; padding:10px 6px; text-align:center; font-size:11px; font-family:var(--mono); font-weight:600; color:var(--text-dim); border:1px solid var(--border); border-radius:6px; cursor:pointer; background:var(--panel); transition:all 100ms;}
+.pair:hover{background:var(--panel-2); color:var(--text);}
+.pair.active{background:var(--accent); color:#fff; border-color:var(--accent);}
+.pair .dot{position:absolute; top:4px; right:4px; width:5px; height:5px; border-radius:50%; background:var(--hbo); opacity:0.5;}
+.pair.motor .dot{background:var(--hbo); opacity:1; box-shadow:0 0 6px var(--hbo);}
+
+/* Plot */
+.plot-card{min-height:440px;}
+.plot-wrap{padding:10px 8px 4px;}
+.plot{width:100%; min-height:420px;}
+
+/* Small multiples */
+.mini-grid{display:grid; grid-template-columns:repeat(7, 1fr); gap:6px; padding:10px 12px;}
+.mini-cell{height:72px; border:1px solid var(--border); border-radius:6px; position:relative; background:rgba(255,255,255,0.02); cursor:pointer;}
+.mini-cell:hover{border-color:var(--accent);}
+.mini-cell.active{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent);}
+.mini-cell .lab{position:absolute; top:3px; left:5px; font-size:9px; font-family:var(--mono); color:var(--text-mute); font-weight:600;}
+
+/* Inspector (right panel) */
+.inspector{background:var(--bg-2); border-left:1px solid var(--border); display:flex; flex-direction:column; overflow:hidden;}
+.ins-h{padding:14px 18px 10px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px;}
+.ins-h h3{margin:0; font-size:13px; font-weight:600;}
+.ins-h .pill{margin-left:auto; font-size:10px; padding:2px 7px; border-radius:999px; background:var(--panel-2); color:var(--text-dim); font-family:var(--mono);}
+.ins-body{flex:1; overflow-y:auto; padding:14px 18px 18px;}
+.ins-body::-webkit-scrollbar{width:6px;} .ins-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1); border-radius:3px;}
+
+.ins-section{margin-bottom:18px;}
+.ins-section h4{margin:0 0 8px; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-mute);}
+.ins-kv{display:grid; grid-template-columns:1fr auto; gap:6px 10px; font-size:12px;}
+.ins-kv dt{color:var(--text-dim); font-weight:400;} .ins-kv dd{margin:0; font-family:var(--mono); font-size:11.5px; text-align:right;}
+
+.subj-list{max-height:260px; overflow-y:auto; border:1px solid var(--border); border-radius:8px; background:var(--panel);}
+.subj-list::-webkit-scrollbar{width:5px;}
+.subj-row{display:grid; grid-template-columns: 20px 1fr auto; gap:8px; padding:6px 10px; font-size:11.5px; font-family:var(--mono); cursor:pointer; align-items:center; color:var(--text-dim); border-bottom:1px solid var(--border);}
+.subj-row:last-child{border-bottom:none;}
+.subj-row:hover{background:var(--panel-2); color:var(--text);}
+.subj-row.active{background:rgba(10,132,255,0.2); color:var(--text);}
+.q{width:7px; height:7px; border-radius:50%; background:var(--green);}
+.q.warn{background:var(--orange);} .q.bad{background:var(--hbo);}
+.subj-row .amp{font-size:10px; color:var(--text-mute);}
+
+.cite{font-family:var(--mono); font-size:11px; color:var(--text-dim); line-height:1.6; white-space:pre-wrap; padding:12px; background:var(--panel); border:1px solid var(--border); border-radius:8px;}
+.btn{appearance:none; border:none; cursor:pointer; padding:6px 11px; border-radius:7px; font-family:inherit; font-size:12px; font-weight:500; display:inline-flex; align-items:center; gap:6px; transition:all 120ms;}
+.btn-primary{background:var(--accent); color:#fff;}
+.btn-primary:hover{filter:brightness(1.1);}
+.btn-ghost{background:var(--panel-2); color:var(--text); border:1px solid var(--border);}
+
+.ctrl{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-dim);}
+.ctrl label{font-size:10.5px; text-transform:uppercase; letter-spacing:0.06em; font-weight:600; color:var(--text-mute);}
+.select{appearance:none; padding:5px 24px 5px 10px; font-family:inherit; font-size:12px; font-weight:500; color:var(--text);
+  background:var(--panel) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%23999' stroke-width='1.5' fill='none'/></svg>") no-repeat right 9px center;
+  border:1px solid var(--border); border-radius:6px; cursor:pointer;}
+
+.boot{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; color:var(--text-dim); font-family:var(--mono); font-size:12px; z-index:200; background:var(--bg); transition:opacity 200ms;}
+.boot.hidden{opacity:0; pointer-events:none;}
+
+</style>
+</head>
+<body>
+
+<div class="boot" id="boot">Loading dataset…</div>
+
+<!-- Landing overlay -->
+<div class="landing" id="landing" style="display:none">
+  <nav class="landing-nav">
+    <img src="assets/maastricht.png" alt="Maastricht University" class="um-logo"/>
+    <div class="brand">fNIRS Motor Task</div>
+    <div class="push"></div>
+    <a href="#" id="goExplore">Explore data</a>
+    <a href="https://google.com" target="_blank" rel="noopener">Download data</a>
+    <a href="https://google.com" target="_blank" rel="noopener">Paper</a>
+  </nav>
+
+  <section class="landing-hero">
+    <div class="lh-body">
+      <div class="lh-eyebrow"><i></i>Open dataset · CC BY 4.0</div>
+      <h1>A large-scale fNIRS <em>sensorimotor benchmark</em></h1>
+      <p class="lead">Functional near-infrared spectroscopy from <span id="landSubjects">109</span> participants performing right-hand hand clenching and finger tapping. Twenty trials, thirteen channels, three hundred and six samples — preview the preprocessed data in your browser before downloading the raw release.</p>
+
+      <div class="lh-byline">
+        <p class="authors-line">
+          <b>Simona Klinkhammer</b><sup>a*</sup>, <b>Tim Näher</b><sup>b,c</sup>, <b>Sophie Raible</b><sup>a</sup>, <b>Michael Lührs</b><sup>a,d</sup>, <b>Franziska Klein</b><sup>e,f</sup>, <b>Bettina Sorger</b><sup>a</sup>
+          <span class="corr">* <a href="mailto:s.klinkhammer@maastrichtuniversity.nl">s.klinkhammer@maastrichtuniversity.nl</a></span>
+        </p>
+        <details class="affiliations-wrap">
+          <summary>Show affiliations</summary>
+          <ol class="affiliations">
+            <li><sup>a</sup>Department of Cognitive Neuroscience, Maastricht University, Maastricht, The Netherlands</li>
+            <li><sup>b</sup>Max Planck Institute for Biological Cybernetics, Tübingen, Germany</li>
+            <li><sup>c</sup>Meta Reality Labs, Seattle, Washington, United States</li>
+            <li><sup>d</sup>Brain Innovation B.V., Maastricht, The Netherlands</li>
+            <li><sup>e</sup>Assistance Systems and Medical Device Technology, Department of Health Services Research, University of Oldenburg, Oldenburg, Germany</li>
+            <li><sup>f</sup>Biomedical Devices and Systems Group, R&amp;D Division Health, OFFIS &mdash; Institute of Information Technology, Oldenburg, Germany</li>
+          </ol>
+        </details>
+      </div>
+
+      <div class="lh-cta">
+        <button class="lh-btn primary" id="enterBtn">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><polygon points="4,2 14,8 4,14"/></svg>
+          Explore data
+          <span class="lh-kbd" style="background:rgba(0,0,0,0.12); color:inherit; opacity:0.55;">↵</span>
+        </button>
+        <a class="lh-btn ghost" href="https://google.com" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 2v9M4 7l4 4 4-4M2 14h12"/></svg>
+          Download data
+        </a>
+        <a class="lh-btn ghost" href="https://google.com" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 2h7l3 3v9H3z" stroke-linejoin="round"/><path d="M10 2v3h3M5 8h6M5 11h6"/></svg>
+          Paper
+        </a>
+      </div>
+      <div class="lh-stats">
+        <div class="lh-stat"><div class="n" id="statSubjects">109</div><div class="l">Participants</div></div>
+        <div class="lh-stat"><div class="n">2 × 10</div><div class="l">Trials / subject</div></div>
+        <div class="lh-stat"><div class="n" id="statChannels">13</div><div class="l">Channels</div></div>
+        <div class="lh-stat"><div class="n">10.17 <span style="font-size:14px; font-weight:500; color:var(--text-mute);">Hz</span></div><div class="l">Sampling</div></div>
+        <div class="lh-stat"><div class="n">30 <span style="font-size:14px; font-weight:500; color:var(--text-mute);">s</span></div><div class="l">Epoch</div></div>
+      </div>
+    </div>
+
+    <!-- Hero art: abstract grand-average trace with optodes & stim marker -->
+    <div class="lh-art">
+      <svg viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="hboGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#ff453a" stop-opacity="0.4"/>
+            <stop offset="100%" stop-color="#ff453a" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="hbrGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0a84ff" stop-opacity="0"/>
+            <stop offset="100%" stop-color="#0a84ff" stop-opacity="0.35"/>
+          </linearGradient>
+        </defs>
+
+        <g opacity="0.08" stroke="#fff" stroke-width="1">
+          <line x1="0" y1="120" x2="480" y2="120"/>
+          <line x1="0" y1="240" x2="480" y2="240"/>
+          <line x1="0" y1="360" x2="480" y2="360"/>
+          <line x1="80" y1="40" x2="80" y2="440"/>
+          <line x1="160" y1="40" x2="160" y2="440"/>
+          <line x1="240" y1="40" x2="240" y2="440"/>
+          <line x1="320" y1="40" x2="320" y2="440"/>
+          <line x1="400" y1="40" x2="400" y2="440"/>
+        </g>
+
+        <line x1="80" y1="40" x2="80" y2="440" stroke="rgba(255,255,255,0.28)" stroke-width="1.2" stroke-dasharray="4 4"/>
+        <text x="86" y="56" font-family="ui-monospace, SF Mono, monospace" font-size="10" fill="rgba(255,255,255,0.5)" letter-spacing="0.05em">STIM · t = 0.00s</text>
+
+        <path d="M 20 215 L 60 220 L 80 218 C 120 212, 150 150, 190 110 C 230 85, 270 108, 310 165 C 340 210, 380 230, 420 225 L 460 222 L 460 238 L 420 240 L 380 245 L 340 230 L 310 185 L 270 130 L 230 110 L 190 135 L 150 180 L 80 238 L 60 240 L 20 235 Z"
+              fill="url(#hboGrad)" opacity="0.6"/>
+        <path d="M 20 225 L 60 228 L 80 226 C 120 220, 150 160, 190 118 C 230 92, 270 115, 310 170 C 340 215, 380 232, 420 228 L 460 225"
+              fill="none" stroke="#ff453a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <path d="M 20 260 L 60 262 L 80 264 C 120 268, 150 310, 190 335 C 230 350, 270 345, 310 320 C 340 298, 380 282, 420 278 L 460 275 L 460 260 L 420 263 L 380 268 L 340 283 L 310 308 L 270 332 L 230 338 L 190 322 L 150 290 L 80 255 L 60 253 L 20 250 Z"
+              fill="url(#hbrGrad)" opacity="0.55"/>
+        <path d="M 20 255 L 60 257 L 80 260 C 120 265, 150 305, 190 328 C 230 345, 270 338, 310 315 C 340 292, 380 278, 420 274 L 460 272"
+              fill="none" stroke="#0a84ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <line x1="0" y1="245" x2="480" y2="245" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+      </svg>
+      <div class="caption">
+        <span>Grand average · <b>Channel 04</b> · n = <span id="heroN">109</span></span>
+        <span>Δ HbO / HbR <b>(z)</b></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="lh-meta">
+    <div class="lh-meta-inner">
+      <div class="lh-meta-card">
+        <h4>Paradigm</h4>
+        <div class="body"><b>Block design.</b> Visually cued <b>right-hand clenching</b> (cond 1) and <b>finger tapping</b> (cond 2). 10 s task / ~20 s rest, ten trials per condition, 30-second epoch from <code>−5 → +25 s</code> around stim onset.</div>
+      </div>
+      <div class="lh-meta-card">
+        <h4>Signal</h4>
+        <div class="body"><b>HbO / HbR</b> concentrations across <b>13 channels</b> over the <b>left-hemispheric motor cortex</b>, sampled at 10.173 Hz. Motion-corrected, band-pass filtered, and z-scored per channel; displayed with pre-stim baseline correction.</div>
+      </div>
+      <div class="lh-meta-card">
+        <h4>Format</h4>
+        <div class="body"><b>Public release:</b> raw BIDS / SNIRF, one folder per participant, with <code>_events.tsv</code>, <code>_optodes.tsv</code>, and BIDS sidecars. <b>This dashboard</b> shows preprocessed example tensors derived via the published pipeline.</div>
+      </div>
+      <div class="lh-meta-card">
+        <h4>What to look for</h4>
+        <div class="body">A canonical hemodynamic response: <span style="color:var(--hbo); font-weight:600;">HbO</span> rises, <span style="color:var(--hbr); font-weight:600;">HbR</span> falls. Effect is strongest on motor-cortex channels <b>02, 04, 08, 09</b>, weaker elsewhere.</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="app" id="app" style="display:none">
+  <!-- Rail -->
+  <aside class="rail">
+    <div class="logo" id="railHome" title="Back to dataset overview"></div>
+    <button class="active" title="Explore · grand average" data-view="grand"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13 5 8l3 3 3-6 3 4"/></svg></button>
+    <button title="Subject" data-view="subject"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="6" r="2.5"/><path d="M3 14c0-2.5 2.2-4.5 5-4.5s5 2 5 4.5"/></svg></button>
+    <div class="spacer"></div>
+    <button title="Theme" id="themeToggle"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v2M8 12v2M2 8h2M12 8h2"/><circle cx="8" cy="8" r="3"/></svg></button>
+  </aside>
+
+  <!-- Main -->
+  <section class="main">
+    <header class="topbar">
+      <div class="crumb">fNIRS Motor Task <b id="viewTitle">· Grand Average</b></div>
+      <div class="spacer"></div>
+      <button class="home-btn" id="homeBtn" title="Return to dataset overview">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M2 8l6-5 6 5M4 7v6h8V7"/></svg>
+        Overview
+      </button>
+    </header>
+
+    <div class="content">
+      <div class="pair-grid" id="pairGrid"></div>
+
+      <div class="card plot-card">
+        <div class="card-h"><h3 id="plotTitle">Grand average · Channel 04</h3><span class="meta" id="plotMeta">n = 109 · between-subject SE</span></div>
+        <div class="plot-wrap"><div id="plot" class="plot"></div></div>
+      </div>
+
+      <div class="card" style="margin-top:14px;" id="miniGridCard">
+        <div class="card-h">
+          <h3 id="miniGridTitle">All 13 channels · grand average</h3>
+          <span class="meta"><span style="display:inline-block;width:14px;height:2px;background:var(--hbo);vertical-align:middle;margin-right:4px;"></span>HbO &nbsp; <span style="display:inline-block;width:14px;height:2px;background:var(--hbr);vertical-align:middle;margin-right:4px;"></span>HbR &nbsp;·&nbsp; solid = Hand, dashed = Finger</span>
+        </div>
+        <div class="mini-grid" id="miniGrid"></div>
+      </div>
+
+      <div class="card" id="heatmapCard" style="margin-top:14px;">
+        <div class="card-h">
+          <h3 id="heatmapTitle">All channels · grand average · Hand Clenching</h3>
+          <span class="meta">HbO 01–13 &nbsp;·&nbsp; HbR 01–13</span>
+        </div>
+        <div id="heatmapPlot" style="width:100%; min-height:300px; padding:6px 6px 2px;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Inspector -->
+  <aside class="inspector">
+    <div class="ins-h">
+      <h3>Participants</h3>
+      <span class="pill" id="ctx">Channel 04 · HbO/HbR</span>
+    </div>
+    <div class="ins-body" id="inspectorBody"></div>
+  </aside>
+</div>
+
+<script>
+/* Real fNIRS data loader — exposes the API the design was built against:
+   meta, grandAvg, timeAxis, loadSubject, getSubject, subjectAverage.
+   Epoch is t = -5 → +25 s, so Fs = (N_TIMES - 1) / 30. */
+(function (global) {
+  const DATA_ROOT = 'data';
+  const TMIN = -5, TMAX = 25;
+
+  async function fetchJSON(p){ const r=await fetch(p); if(!r.ok) throw new Error(p); return r.json(); }
+  async function fetchBuf(p){ const r=await fetch(p); if(!r.ok) throw new Error(p); return r.arrayBuffer(); }
+
+  async function initFnirsData(){
+    const [meta, grand, subjAvgBuf] = await Promise.all([
+      fetchJSON(`${DATA_ROOT}/meta.json`),
+      fetchJSON(`${DATA_ROOT}/grand_avg.json`),
+      fetchBuf(`${DATA_ROOT}/subject_avg.bin`),
+    ]);
+    const N_TIMES = meta.n_times, N_CH = meta.n_channels, N_TRIALS = meta.n_trials, N_SUBJ = meta.n_subjects;
+    const FS = (N_TIMES - 1) / (TMAX - TMIN); // inclusive both ends: 305/30 ≈ 10.1667
+    const subjAvg = new Float32Array(subjAvgBuf);
+    const timeAxis = Array.from({length: N_TIMES}, (_, i) => TMIN + i / FS);
+
+    // Pre-stim baseline window (t < 0). Data is z-scored over the whole recording,
+    // so the pre-stim mean drifts off zero — subtract it per trace for ERP-style display.
+    const N_PRE = timeAxis.findIndex(v => v >= 0);
+    function baselineCorrect(arr){
+      let s = 0;
+      for (let i = 0; i < N_PRE; i++) s += arr[i];
+      const bl = s / N_PRE;
+      const out = new Array(arr.length);
+      for (let i = 0; i < arr.length; i++) out[i] = arr[i] - bl;
+      return out;
+    }
+
+    for (let cond = 0; cond < 2; cond++){
+      for (let c = 0; c < N_CH; c++){
+        grand.mean[cond][c] = baselineCorrect(grand.mean[cond][c]);
+      }
+    }
+
+    const subjectCache = new Map();
+
+    async function loadSubject(idx){
+      if (subjectCache.has(idx)) return subjectCache.get(idx);
+      const subj = meta.subjects[idx];
+      const [trialsBuf, labels] = await Promise.all([
+        fetchBuf(`${DATA_ROOT}/subjects/${subj}.bin`),
+        fetchJSON(`${DATA_ROOT}/subjects/${subj}_labels.json`),
+      ]);
+      const flat = new Float32Array(trialsBuf);
+      const trials = [];
+      for (let t = 0; t < N_TRIALS; t++){
+        const chans = [];
+        for (let c = 0; c < N_CH; c++){
+          const start = t*N_CH*N_TIMES + c*N_TIMES;
+          chans.push(Array.from(flat.subarray(start, start + N_TIMES)));
+        }
+        trials.push(chans);
+      }
+      const entry = { trials, labels };
+      subjectCache.set(idx, entry);
+      return entry;
+    }
+
+    function getSubject(idx){ return subjectCache.get(idx); }
+
+    function subjectAverage(idx){
+      const avg = [[],[]];
+      const stride = 2*N_CH*N_TIMES;
+      for (let cond = 0; cond < 2; cond++){
+        for (let c = 0; c < N_CH; c++){
+          const start = idx*stride + cond*N_CH*N_TIMES + c*N_TIMES;
+          avg[cond].push(baselineCorrect(Array.from(subjAvg.subarray(start, start + N_TIMES))));
+        }
+      }
+      return avg;
+    }
+
+    return {
+      meta, grandAvg: grand, timeAxis,
+      loadSubject, getSubject, subjectAverage,
+      N_TIMES, N_CHANNELS: N_CH, N_SUBJECTS: N_SUBJ, N_TRIALS, FS, TMIN, TMAX,
+    };
+  }
+
+  global.initFnirsData = initFnirsData;
+})(window);
+</script>
+
+<script>
+/* Plotly helpers — dual-panel HbO/HbR layout, always shows mean ± SE and stim marker at t=0. */
+(function (global) {
+
+  function meanSeTraces({ mean, se, label, color, softColor, axisRef, timeAxis, width=2, dash='solid', showRibbon=true, showLegend=true }) {
+    const n = mean.length;
+    const x = timeAxis ? Array.from(timeAxis) : Array.from({length:n}, (_, i) => i);
+    const traces = [];
+    if (showRibbon) {
+      const upper = new Array(n), lower = new Array(n);
+      for (let i = 0; i < n; i++) { upper[i] = mean[i]+se[i]; lower[i] = mean[i]-se[i]; }
+      traces.push({
+        x: x.concat(x.slice().reverse()),
+        y: upper.concat(lower.slice().reverse()),
+        fill: 'toself', fillcolor: softColor,
+        line: { color: 'rgba(0,0,0,0)' },
+        name: `${label} ± SE`, showlegend: false, hoverinfo: 'skip',
+        xaxis: axisRef.x, yaxis: axisRef.y,
+      });
+    }
+    traces.push({
+      x, y: Array.from(mean), type: 'scatter', mode: 'lines',
+      name: label, line: { color, width, shape: 'spline', smoothing: 0.5, dash },
+      xaxis: axisRef.x, yaxis: axisRef.y, legendgroup: label, showlegend: showLegend,
+      hovertemplate: `<b>${label}</b><br>%{x:.2f}s<br>%{y:.3f}<extra></extra>`,
+    });
+    return traces;
+  }
+
+  function stimMarker(theme){
+    return { type:'line', xref:'x', x0:0, x1:0, yref:'paper', y0:0, y1:1,
+             line:{ color:theme.muted, width:1, dash:'dot' } };
+  }
+
+  function dualLayout({ theme, xTitle='Time (s)', yTopTitle='ΔHbO (z)', yBotTitle='ΔHbR (z)', showLegend=true, legendTop=false }) {
+    const ax = {
+      showgrid: true, gridcolor: theme.grid, zeroline: false,
+      linecolor: theme.axisLine, tickcolor: theme.axisLine,
+      tickfont: { color: theme.muted, size: 11, family: theme.font },
+      title: { font: { color: theme.muted, size: 11, family: theme.font } },
+    };
+    return {
+      font: { family: theme.font, color: theme.text, size: 12 },
+      xaxis: { ...ax, domain:[0,1], anchor:'y', matches:'x2', showticklabels:false },
+      xaxis2: { ...ax, title:{ text:xTitle, font:{color:theme.muted,size:11,family:theme.font}}, domain:[0,1], anchor:'y2' },
+      yaxis:  { ...ax, title:{ text:yTopTitle, font:{color:theme.hbo,size:11,family:theme.font}}, domain:[0.54, 1.0], zeroline:true, zerolinecolor:theme.zeroLine },
+      yaxis2: { ...ax, title:{ text:yBotTitle, font:{color:theme.hbr,size:11,family:theme.font}}, domain:[0, 0.46], zeroline:true, zerolinecolor:theme.zeroLine },
+      margin: { t: 18, r: 18, b: 44, l: 56 },
+      plot_bgcolor: 'rgba(0,0,0,0)',
+      paper_bgcolor: 'rgba(0,0,0,0)',
+      legend: legendTop
+        ? { orientation:'h', y:1.08, x:0, font:{color:theme.text,size:11,family:theme.font}, bgcolor:'rgba(0,0,0,0)' }
+        : { orientation:'h', y:-0.15, x:0, font:{color:theme.text,size:11,family:theme.font}, bgcolor:'rgba(0,0,0,0)' },
+      showlegend: showLegend,
+      hovermode: 'x unified',
+      hoverlabel: { bgcolor: theme.hoverBg, bordercolor: theme.border, font: { color: theme.text, family: theme.font, size: 11 } },
+      shapes: [
+        { type:'line', xref:'x', x0:0, x1:0, yref:'paper', y0:0.54, y1:1.0, line:{ color:theme.muted, width:1, dash:'dot' } },
+        { type:'line', xref:'x2', x0:0, x1:0, yref:'paper', y0:0, y1:0.46, line:{ color:theme.muted, width:1, dash:'dot' } },
+      ],
+    };
+  }
+
+  function heatmapLayout({ theme, xTitle='Time (s)', yTitle='Channel' }) {
+    const ax = {
+      showgrid: false,
+      zeroline: false,
+      showline: false,
+      linecolor: 'rgba(0,0,0,0)', tickcolor: theme.axisLine,
+      tickfont: { color: theme.muted, size: 10, family: theme.font },
+    };
+    return {
+      font: { family: theme.font, color: theme.text, size: 12 },
+      xaxis: { ...ax, title:{ text:xTitle, font:{color:theme.muted,size:11}} },
+      yaxis: { ...ax, title:{ text:yTitle, font:{color:theme.muted,size:11}}, autorange: 'reversed' },
+      margin: { t: 14, r: 18, b: 44, l: 70 },
+      plot_bgcolor: 'rgba(0,0,0,0)',
+      paper_bgcolor: 'rgba(0,0,0,0)',
+      hoverlabel: { bgcolor: theme.hoverBg, bordercolor: theme.border, font: { color: theme.text, family: theme.font } },
+      shapes: [ stimMarker(theme) ],
+    };
+  }
+
+  global.FNIRS_PLOT = { meanSeTraces, dualLayout, heatmapLayout };
+})(window);
+</script>
+
+<script>
+/* App controller — state, view rendering, inspector tabs, landing overlay. */
+let FNIRS = null;
+let M = null;
+
+function themeColors(){
+  const cs=k=>getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+  const isDark = (document.documentElement.dataset.theme || 'dark') === 'dark';
+  return {
+    font:cs('--font'), text:cs('--text'), muted:cs('--text-dim'),
+    grid:'rgba(148,148,160,0.14)', axisLine:'rgba(148,148,160,0.35)', zeroLine:'rgba(148,148,160,0.3)',
+    hbo:cs('--hbo'), hbr:cs('--hbr'), border:cs('--border-strong'),
+    hoverBg: isDark ? '#242426' : '#fff',
+    hbo_soft: isDark ? 'rgba(255,69,58,0.18)' : 'rgba(215,0,21,0.16)',
+    hbr_soft: isDark ? 'rgba(10,132,255,0.18)' : 'rgba(0,64,221,0.14)',
+  };
+}
+
+const STATE = { view:'grand', subject:0, pair:4 };
+
+/* Channel grid — 13 numeric cells, motor channels (4–6) highlighted. */
+function buildPairGrid(){
+  const pairGrid=document.getElementById('pairGrid');
+  pairGrid.innerHTML='';
+  for(let p=1;p<=13;p++){
+    const d=document.createElement('div');
+    const motor=(p===2||p===4||p===8||p===9);
+    d.className='pair'+(p===STATE.pair?' active':'')+(motor?' motor':'');
+    d.innerHTML=`<span class="dot"></span>Ch${String(p).padStart(2,'0')}`;
+    d.onclick=()=>{STATE.pair=p; document.querySelectorAll('.pair').forEach(x=>x.classList.toggle('active',false)); d.classList.add('active'); render();};
+    pairGrid.appendChild(d);
+  }
+}
+
+function showLanding(){
+  const l = document.getElementById('landing');
+  l.classList.remove('hiding');
+  l.style.display = '';
+  window.scrollTo(0, 0);
+}
+
+function hideLanding(){
+  const landing = document.getElementById('landing');
+  landing.classList.add('hiding');
+  setTimeout(()=>{ landing.style.display='none'; }, 380);
+}
+
+function wireControls(){
+  document.querySelectorAll('.rail button[data-view]').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('.rail button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active'); STATE.view=b.dataset.view; render();
+  });
+  document.getElementById('themeToggle').onclick=()=>{
+    const c=document.documentElement.dataset.theme||'dark';
+    document.documentElement.dataset.theme = c==='dark'?'light':'dark'; render();
+  };
+  document.getElementById('railHome').onclick = showLanding;
+  document.getElementById('homeBtn').onclick = showLanding;
+}
+
+function condTraces({mm,ss,ref,timeAxis,theme,chromo}){
+  // chromo: 'HbO' | 'HbR' — determines color. Condition determines line style (solid/dashed).
+  const color = chromo === 'HbO' ? theme.hbo : theme.hbr;
+  const soft  = chromo === 'HbO' ? theme.hbo_soft : theme.hbr_soft;
+  const C=[
+    {i:0, name:'Hand Clenching', dash:'solid'},
+    {i:1, name:'Finger Tapping', dash:'dash'},
+  ];
+  const out=[];
+  C.forEach(c=>{
+    out.push(...FNIRS_PLOT.meanSeTraces({
+      mean:mm[c.i], se:ss[c.i], label:c.name,
+      color, softColor:soft, axisRef:ref, timeAxis, dash:c.dash,
+    }));
+  });
+  return out;
+}
+
+function trialSE(entry, ch){
+  const {trials,labels}=entry;
+  const N=FNIRS.N_TIMES;
+  function se(code){
+    const mask=labels.map(l=>l===code); const n=mask.filter(Boolean).length||1;
+    const sum=new Array(N).fill(0), sq=new Array(N).fill(0);
+    for(let t=0;t<trials.length;t++) if(mask[t]){
+      const row = trials[t][ch];
+      for(let i=0;i<N;i++){const v=row[i]; sum[i]+=v; sq[i]+=v*v;}
+    }
+    const o=new Array(N);
+    for(let i=0;i<N;i++){const m=sum[i]/n; const v=Math.max(0,(sq[i]-n*m*m)/(Math.max(1,n-1))); o[i]=Math.sqrt(v/n);}
+    return o;
+  }
+  return { se1: se('1'), se2: se('2') };
+}
+
+function renderMain(){
+  const theme=themeColors();
+  const titles={grand:'Grand Average', subject:'Subject Average'};
+  document.getElementById('viewTitle').textContent = '· ' + titles[STATE.view];
+  document.getElementById('ctx').textContent = `Channel ${String(STATE.pair).padStart(2,'0')} · HbO/HbR`;
+  const ch=STATE.pair-1, chR=ch+13;
+  document.getElementById('plotTitle').textContent = `${titles[STATE.view]} · Channel ${String(STATE.pair).padStart(2,'0')}`;
+  document.getElementById('plotMeta').textContent =
+    STATE.view==='grand' ? `n=${FNIRS.N_SUBJECTS} · between-subject SE` :
+    `${M.subjects[STATE.subject]} · across-trial SE`;
+
+  const plotEl = document.getElementById('plot');
+  const heatEl = document.getElementById('heatmapPlot');
+  // Purge between view switches so axes/colorbars from the prior layout don't linger
+  Plotly.purge(plotEl);
+  Plotly.purge(heatEl);
+  const t = FNIRS.timeAxis;
+
+  // Integrated all-channel heatmap (Hand Clenching, cond 0)
+  const heatSrc = STATE.view==='subject' ? FNIRS.subjectAverage(STATE.subject) : FNIRS.grandAvg.mean;
+  document.getElementById('heatmapTitle').textContent =
+    STATE.view==='subject'
+      ? `All channels · subject ${M.subjects[STATE.subject]} · Hand Clenching`
+      : `All channels · grand average · Hand Clenching`;
+  const hmY=[]; for(let i=0;i<13;i++) hmY.push(`HbO${String(i+1).padStart(2,'0')}`); for(let i=0;i<13;i++) hmY.push(`HbR${String(i+1).padStart(2,'0')}`);
+  const hmColor=[[0,'#2563eb'],[0.25,'#1e3a8a'],[0.5,'#141418'],[0.75,'#991b1b'],[1,'#ef4444']];
+  Plotly.newPlot(heatEl, [{
+    z: heatSrc[0], x: t, y: hmY, type:'heatmap', colorscale: hmColor, zmid:0, xgap:0, ygap:0, zsmooth:'best',
+    colorbar:{tickfont:{color:theme.muted,size:10},outlinewidth:0,thickness:8,len:0.88,title:{text:'Δ (z)',font:{color:theme.muted,size:10}}},
+    hovertemplate:'%{y}<br>%{x:.2f}s<br>%{z:.3f}<extra></extra>'
+  }], { ...FNIRS_PLOT.heatmapLayout({theme}), margin:{t:8,r:18,b:40,l:66} },
+     {responsive:true, displaylogo:false, displayModeBar:false});
+
+  if(STATE.view==='grand'){
+    const g=FNIRS.grandAvg;
+    const top=condTraces({mm:[g.mean[0][ch],g.mean[1][ch]], ss:[g.se[0][ch],g.se[1][ch]], ref:{x:'x',y:'y'}, timeAxis:t, theme, chromo:'HbO'});
+    const bot=condTraces({mm:[g.mean[0][chR],g.mean[1][chR]], ss:[g.se[0][chR],g.se[1][chR]], ref:{x:'x2',y:'y2'}, timeAxis:t, theme, chromo:'HbR'});
+    bot.forEach(tr=>tr.showlegend=false);
+    Plotly.newPlot(plotEl, [...top,...bot], FNIRS_PLOT.dualLayout({theme,legendTop:true}), {responsive:true, displaylogo:false, displayModeBar:false});
+  } else if(STATE.view==='subject'){
+    const avg = FNIRS.subjectAverage(STATE.subject);
+    let se0HbO, se1HbO, se0HbR, se1HbR;
+    const entry = FNIRS.getSubject(STATE.subject);
+    if (entry){
+      const a = trialSE(entry, ch), b = trialSE(entry, chR);
+      se0HbO=a.se1; se1HbO=a.se2; se0HbR=b.se1; se1HbR=b.se2;
+    } else {
+      const z=new Array(FNIRS.N_TIMES).fill(0);
+      se0HbO=z; se1HbO=z; se0HbR=z; se1HbR=z;
+    }
+    const top=condTraces({mm:[avg[0][ch],avg[1][ch]], ss:[se0HbO,se1HbO], ref:{x:'x',y:'y'}, timeAxis:t, theme, chromo:'HbO'});
+    const bot=condTraces({mm:[avg[0][chR],avg[1][chR]], ss:[se0HbR,se1HbR], ref:{x:'x2',y:'y2'}, timeAxis:t, theme, chromo:'HbR'});
+    bot.forEach(tr=>tr.showlegend=false);
+    Plotly.newPlot(plotEl, [...top,...bot], FNIRS_PLOT.dualLayout({theme,legendTop:true}), {responsive:true, displaylogo:false, displayModeBar:false});
+    if (!entry) {
+      FNIRS.loadSubject(STATE.subject).then(()=>{ if(STATE.view==='subject') render(); });
+    }
+  }
+
+  // Mini grid
+  const mg=document.getElementById('miniGrid'); mg.innerHTML='';
+  for(let p=1;p<=13;p++){
+    const cell=document.createElement('div');
+    cell.className='mini-cell'+(p===STATE.pair?' active':'');
+    cell.innerHTML=`<div class="lab">Ch${String(p).padStart(2,'0')}</div><div id="m-${p}" style="position:absolute; inset:14px 4px 4px 4px;"></div>`;
+    cell.onclick=()=>{STATE.pair=p; document.querySelectorAll('.pair').forEach((x,i)=>x.classList.toggle('active', i+1===p)); render();};
+    mg.appendChild(cell);
+  }
+  // Title and data source depend on current view
+  const inSubject = STATE.view==='subject';
+  document.getElementById('miniGridTitle').textContent =
+    `All 13 channels · ${inSubject ? `subject ${M.subjects[STATE.subject]}` : 'grand average'}`;
+  const src = inSubject ? FNIRS.subjectAverage(STATE.subject) : FNIRS.grandAvg.mean; // src[cond][ch][i]
+
+  setTimeout(()=>{
+    for(let p=1;p<=13;p++){
+      const el=document.getElementById(`m-${p}`); if(!el) continue;
+      const hbo = p-1, hbr = p-1+13;
+      Plotly.newPlot(el, [
+        // HbO: red; Hand solid, Finger dashed
+        {x:t, y:src[0][hbo], type:'scatter', mode:'lines', line:{color:theme.hbo,width:1.4,shape:'spline',dash:'solid'}, hoverinfo:'skip'},
+        {x:t, y:src[1][hbo], type:'scatter', mode:'lines', line:{color:theme.hbo,width:1.4,shape:'spline',dash:'dash'}, hoverinfo:'skip'},
+        // HbR: blue; Hand solid, Finger dashed
+        {x:t, y:src[0][hbr], type:'scatter', mode:'lines', line:{color:theme.hbr,width:1.4,shape:'spline',dash:'solid'}, hoverinfo:'skip'},
+        {x:t, y:src[1][hbr], type:'scatter', mode:'lines', line:{color:theme.hbr,width:1.4,shape:'spline',dash:'dash'}, hoverinfo:'skip'},
+      ], {margin:{t:2,r:2,b:2,l:2}, xaxis:{visible:false}, yaxis:{visible:false}, plot_bgcolor:'rgba(0,0,0,0)', paper_bgcolor:'rgba(0,0,0,0)', showlegend:false,
+         shapes:[{type:'line',x0:0,x1:0,yref:'paper',y0:0,y1:1,line:{color:theme.muted,width:0.5,dash:'dot'}}]
+      }, {displayModeBar:false, staticPlot:true, responsive:true});
+    }
+  }, 0);
+}
+
+/* 13×13 sample covariance matrix from a [13][N_TIMES] array */
+function covarianceMatrix(rows){
+  const n = rows.length, t = rows[0].length;
+  const means = new Array(n);
+  for (let i = 0; i < n; i++){
+    let s = 0; for (let k = 0; k < t; k++) s += rows[i][k];
+    means[i] = s / t;
+  }
+  const cov = Array.from({length:n}, () => new Array(n).fill(0));
+  for (let i = 0; i < n; i++){
+    for (let j = i; j < n; j++){
+      const mi = means[i], mj = means[j];
+      let s = 0;
+      for (let k = 0; k < t; k++) s += (rows[i][k] - mi) * (rows[j][k] - mj);
+      cov[i][j] = cov[j][i] = s / (t - 1);
+    }
+  }
+  return cov;
+}
+
+function renderCovMatrix(elId, data, title, ringColor){
+  const el = document.getElementById(elId);
+  if (!el) return;
+  Plotly.purge(el);
+  const labels = Array.from({length:13}, (_, i) => `Ch${String(i+1).padStart(2,'0')}`);
+  const theme = themeColors();
+  // Symmetric colour range around 0, auto-scaled to the data's magnitude
+  let maxAbs = 0;
+  for (let i = 0; i < data.length; i++) for (let j = 0; j < data[i].length; j++) {
+    const v = Math.abs(data[i][j]); if (v > maxAbs) maxAbs = v;
+  }
+  const zLim = maxAbs || 1;
+  Plotly.newPlot(el, [{
+    z: data, x: labels, y: labels,
+    type: 'heatmap', zmin: -zLim, zmax: zLim, zmid: 0,
+    colorscale: [[0,'#2563eb'],[0.25,'#1e3a8a'],[0.5,'#141418'],[0.75,'#991b1b'],[1,'#ef4444']],
+    xgap: 1, ygap: 1,
+    colorbar: { tickfont:{color:theme.muted,size:9}, outlinewidth:0, thickness:6, len:0.9, x:1.02, xpad:0 },
+    hovertemplate: '%{y} × %{x}<br>cov = %{z:.3f}<extra></extra>',
+  }], {
+    font: { family: theme.font, color: theme.text, size: 10 },
+    xaxis: { side:'bottom', tickfont:{color:theme.muted,size:9,family:theme.font}, showgrid:false, zeroline:false, linecolor:'rgba(0,0,0,0)', ticks:'' },
+    yaxis: { autorange:'reversed', tickfont:{color:theme.muted,size:9,family:theme.font}, showgrid:false, zeroline:false, linecolor:'rgba(0,0,0,0)', ticks:'' },
+    margin: { t: 4, r: 40, b: 40, l: 48 },
+    plot_bgcolor:'rgba(0,0,0,0)', paper_bgcolor:'rgba(0,0,0,0)',
+    hoverlabel: { bgcolor: theme.hoverBg, bordercolor: theme.border, font: { color: theme.text, family: theme.font } },
+  }, { responsive:true, displaylogo:false, displayModeBar:false });
+}
+
+function renderInspector(){
+  const el = document.getElementById('inspectorBody');
+  const rows = M.subjects.map((n,i) =>
+    `<div class="subj-row ${i===STATE.subject?'active':''}" data-i="${i}"><span class="q"></span><span>${n}</span><span class="amp">#${String(i+1).padStart(3,'0')}</span></div>`
+  ).join('');
+  const srcLabel = STATE.view==='subject' ? M.subjects[STATE.subject] : `grand · n=${FNIRS.N_SUBJECTS}`;
+  el.innerHTML = `
+    <div class="ins-section">
+      <h4>Participants (${FNIRS.N_SUBJECTS}) · click to load</h4>
+      <div class="subj-list" style="max-height:240px;">${rows}</div>
+    </div>
+    <div class="ins-section">
+      <h4>HbO channel covariance · ${srcLabel}</h4>
+      <div id="hboCovPlot" style="width:100%; height:220px;"></div>
+    </div>
+    <div class="ins-section" style="margin-bottom:4px;">
+      <h4>HbR channel covariance · ${srcLabel}</h4>
+      <div id="hbrCovPlot" style="width:100%; height:220px;"></div>
+    </div>
+  `;
+  el.querySelectorAll('.subj-row').forEach(r => r.onclick = () => {
+    STATE.subject = +r.dataset.i;
+    el.querySelectorAll('.subj-row').forEach(x => x.classList.remove('active'));
+    r.classList.add('active');
+    if (STATE.view === 'grand') {
+      STATE.view = 'subject';
+      document.querySelectorAll('.rail button').forEach(x => x.classList.toggle('active', x.dataset.view === 'subject'));
+    }
+    render();
+  });
+
+  // Build correlation matrices from the averaged response (mean across both conditions)
+  const src = STATE.view==='subject' ? FNIRS.subjectAverage(STATE.subject) : FNIRS.grandAvg.mean;
+  const hboRows = Array.from({length:13}, (_, i) => {
+    const a = src[0][i], b = src[1][i], r = new Array(a.length);
+    for (let k = 0; k < a.length; k++) r[k] = 0.5 * (a[k] + b[k]);
+    return r;
+  });
+  const hbrRows = Array.from({length:13}, (_, i) => {
+    const a = src[0][i+13], b = src[1][i+13], r = new Array(a.length);
+    for (let k = 0; k < a.length; k++) r[k] = 0.5 * (a[k] + b[k]);
+    return r;
+  });
+  const hboCov = covarianceMatrix(hboRows);
+  const hbrCov = covarianceMatrix(hbrRows);
+  renderCovMatrix('hboCovPlot', hboCov, 'HbO', 'var(--hbo)');
+  renderCovMatrix('hbrCovPlot', hbrCov, 'HbR', 'var(--hbr)');
+}
+
+function render(){ renderMain(); renderInspector(); }
+
+/* Boot */
+(async function boot(){
+  try{
+    FNIRS = await initFnirsData();
+    M = FNIRS.meta;
+
+    document.getElementById('landSubjects').textContent = FNIRS.N_SUBJECTS;
+    document.getElementById('statSubjects').textContent = FNIRS.N_SUBJECTS;
+    document.getElementById('heroN').textContent = FNIRS.N_SUBJECTS;
+
+    buildPairGrid();
+    wireControls();
+
+    document.getElementById('boot').classList.add('hidden');
+    document.getElementById('landing').style.display = '';
+    document.getElementById('app').style.display = '';
+
+    render();
+
+    // Landing overlay dismiss logic
+    document.getElementById('enterBtn').onclick = hideLanding;
+    document.getElementById('goExplore').onclick = e=>{ e.preventDefault(); hideLanding(); };
+    document.addEventListener('keydown', (e)=>{
+      const landing = document.getElementById('landing');
+      if(landing.style.display==='none') return;
+      if(e.key==='Enter' || e.key==='Escape' || e.key===' ') { e.preventDefault(); hideLanding(); }
+    });
+  }catch(err){
+    document.getElementById('boot').textContent = 'Failed to load dataset: ' + err.message;
+    console.error(err);
+  }
+})();
+</script>
+</body>
+</html>

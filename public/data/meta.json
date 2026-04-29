@@ -1,0 +1,298 @@
+{
+  "subjects": [
+    "P001",
+    "P002",
+    "P003",
+    "P004",
+    "P005",
+    "P006",
+    "P007",
+    "P008",
+    "P009",
+    "P010",
+    "P011",
+    "P012",
+    "P013",
+    "P014",
+    "P015",
+    "P016",
+    "P017",
+    "P018",
+    "P019",
+    "P020",
+    "P021",
+    "P022",
+    "P023",
+    "P024",
+    "P025",
+    "P026",
+    "P027",
+    "P028",
+    "P029",
+    "P030",
+    "P031",
+    "P032",
+    "P033",
+    "P034",
+    "P035",
+    "P036",
+    "P037",
+    "P038",
+    "P039",
+    "P040",
+    "P041",
+    "P042",
+    "P043",
+    "P044",
+    "P045",
+    "P046",
+    "P047",
+    "P048",
+    "P049",
+    "P050",
+    "P051",
+    "P052",
+    "P053",
+    "P054",
+    "P055",
+    "P056",
+    "P057",
+    "P058",
+    "P059",
+    "P060",
+    "P061",
+    "P062",
+    "P063",
+    "P064",
+    "P065",
+    "P066",
+    "P067",
+    "P068",
+    "P069",
+    "P070",
+    "P071",
+    "P072",
+    "P073",
+    "P074",
+    "P075",
+    "P076",
+    "P077",
+    "P078",
+    "P079",
+    "P080",
+    "P081",
+    "P082",
+    "P083",
+    "P084",
+    "P085",
+    "P086",
+    "P087",
+    "P088",
+    "P089",
+    "P090",
+    "P091",
+    "P092",
+    "P093",
+    "P094",
+    "P095",
+    "P096",
+    "P097",
+    "P098",
+    "P099",
+    "P100",
+    "P101",
+    "P102",
+    "P103",
+    "P104",
+    "P105",
+    "P106",
+    "P107",
+    "P108",
+    "P109"
+  ],
+  "n_subjects": 109,
+  "n_channels": 26,
+  "n_times": 306,
+  "n_trials": 20,
+  "channels": [
+    {
+      "index": 0,
+      "name": "HbO01",
+      "chromophore": "HbO",
+      "pair": 1
+    },
+    {
+      "index": 1,
+      "name": "HbO02",
+      "chromophore": "HbO",
+      "pair": 2
+    },
+    {
+      "index": 2,
+      "name": "HbO03",
+      "chromophore": "HbO",
+      "pair": 3
+    },
+    {
+      "index": 3,
+      "name": "HbO04",
+      "chromophore": "HbO",
+      "pair": 4
+    },
+    {
+      "index": 4,
+      "name": "HbO05",
+      "chromophore": "HbO",
+      "pair": 5
+    },
+    {
+      "index": 5,
+      "name": "HbO06",
+      "chromophore": "HbO",
+      "pair": 6
+    },
+    {
+      "index": 6,
+      "name": "HbO07",
+      "chromophore": "HbO",
+      "pair": 7
+    },
+    {
+      "index": 7,
+      "name": "HbO08",
+      "chromophore": "HbO",
+      "pair": 8
+    },
+    {
+      "index": 8,
+      "name": "HbO09",
+      "chromophore": "HbO",
+      "pair": 9
+    },
+    {
+      "index": 9,
+      "name": "HbO10",
+      "chromophore": "HbO",
+      "pair": 10
+    },
+    {
+      "index": 10,
+      "name": "HbO11",
+      "chromophore": "HbO",
+      "pair": 11
+    },
+    {
+      "index": 11,
+      "name": "HbO12",
+      "chromophore": "HbO",
+      "pair": 12
+    },
+    {
+      "index": 12,
+      "name": "HbO13",
+      "chromophore": "HbO",
+      "pair": 13
+    },
+    {
+      "index": 13,
+      "name": "HbR01",
+      "chromophore": "HbR",
+      "pair": 1
+    },
+    {
+      "index": 14,
+      "name": "HbR02",
+      "chromophore": "HbR",
+      "pair": 2
+    },
+    {
+      "index": 15,
+      "name": "HbR03",
+      "chromophore": "HbR",
+      "pair": 3
+    },
+    {
+      "index": 16,
+      "name": "HbR04",
+      "chromophore": "HbR",
+      "pair": 4
+    },
+    {
+      "index": 17,
+      "name": "HbR05",
+      "chromophore": "HbR",
+      "pair": 5
+    },
+    {
+      "index": 18,
+      "name": "HbR06",
+      "chromophore": "HbR",
+      "pair": 6
+    },
+    {
+      "index": 19,
+      "name": "HbR07",
+      "chromophore": "HbR",
+      "pair": 7
+    },
+    {
+      "index": 20,
+      "name": "HbR08",
+      "chromophore": "HbR",
+      "pair": 8
+    },
+    {
+      "index": 21,
+      "name": "HbR09",
+      "chromophore": "HbR",
+      "pair": 9
+    },
+    {
+      "index": 22,
+      "name": "HbR10",
+      "chromophore": "HbR",
+      "pair": 10
+    },
+    {
+      "index": 23,
+      "name": "HbR11",
+      "chromophore": "HbR",
+      "pair": 11
+    },
+    {
+      "index": 24,
+      "name": "HbR12",
+      "chromophore": "HbR",
+      "pair": 12
+    },
+    {
+      "index": 25,
+      "name": "HbR13",
+      "chromophore": "HbR",
+      "pair": 13
+    }
+  ],
+  "conditions": [
+    {
+      "code": "1",
+      "name": "Hand Clenching"
+    },
+    {
+      "code": "2",
+      "name": "Finger Tapping"
+    }
+  ],
+  "subject_avg_shape": [
+    109,
+    2,
+    26,
+    306
+  ],
+  "subject_avg_dtype": "float32",
+  "single_trial_shape": [
+    20,
+    26,
+    306
+  ],
+  "single_trial_dtype": "float32"
+}
