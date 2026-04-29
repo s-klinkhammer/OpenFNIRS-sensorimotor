@@ -2,10 +2,10 @@
 
 Reads every participant's SD fNIRS data from data/Pxxx/Pxxx_SD_X.npy and
 writes:
-    public/data/meta.json          — subjects, channels, conditions, shape
-    public/data/grand_avg.json     — grand avg ± between-subject SE per condition
-    public/data/subject_avg.bin    — (n_subjects, 2, 26, 306) float32
-    public/data/subjects/Pxxx.bin  — (20, 26, 306) float32 single-trial data
+    docs/data/meta.json          — subjects, channels, conditions, shape
+    docs/data/grand_avg.json     — grand avg ± between-subject SE per condition
+    docs/data/subject_avg.bin    — (n_subjects, 2, 26, 306) float32
+    docs/data/subjects/Pxxx.bin  — (20, 26, 306) float32 single-trial data
 """
 
 from __future__ import annotations
@@ -17,7 +17,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data"
-OUT_DIR = ROOT / "public" / "data"
+OUT_DIR = ROOT / "docs" / "data"
 SUBJECTS_DIR = OUT_DIR / "subjects"
 
 N_CHANNELS = 26
