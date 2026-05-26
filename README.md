@@ -1,7 +1,7 @@
 # OpenFNIRS-sensorimotor
 
 A large-scale fNIRS sensorimotor benchmark for fNIRS classification methods.
-**N = 109 participants** performing right-hand **hand clenching** vs **finger
+**N = 100 participants** performing right-hand **hand clenching** vs **finger
 tapping**, recorded across **13 channels** over the left motor cortex
 (HbO + HbR), sampled at 10.173 Hz.
 
