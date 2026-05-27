@@ -255,10 +255,6 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 2h7l3 3v9H3z" stroke-linejoin="round"/><path d="M10 2v3h3M5 8h6M5 11h6"/></svg>
           Paper
         </a>
-        <a class="lh-btn ghost" href="https://github.com/s-klinkhammer/OpenFNIRS-sensorimotor" target="_blank" rel="noopener">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-          Repository with example code
-        </a>
       </div>
       <div class="lh-stats">
         <div class="lh-stat"><div class="n" id="statSubjects">109</div><div class="l">Participants</div></div>
@@ -310,7 +306,7 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:
         <line x1="0" y1="245" x2="480" y2="245" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
       </svg>
       <div class="caption">
-        <span>Grand average · <b>Channel 04</b> · n = <span id="heroN">109</span></span>
+        <span>Block average · <b>Channel 04</b> · n = <span id="heroN">100</span></span>
         <span>Δ HbO / HbR <b>(z)</b></span>
       </div>
     </div>
@@ -343,7 +339,7 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:
   <!-- Rail -->
   <aside class="rail">
     <div class="logo" id="railHome" title="Back to dataset overview"></div>
-    <button class="active" title="Explore · grand average" data-view="grand"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13 5 8l3 3 3-6 3 4"/></svg></button>
+    <button class="active" title="Explore · block average" data-view="grand"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13 5 8l3 3 3-6 3 4"/></svg></button>
     <button title="Subject" data-view="subject"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="6" r="2.5"/><path d="M3 14c0-2.5 2.2-4.5 5-4.5s5 2 5 4.5"/></svg></button>
     <div class="spacer"></div>
     <button title="Theme" id="themeToggle"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v2M8 12v2M2 8h2M12 8h2"/><circle cx="8" cy="8" r="3"/></svg></button>
@@ -352,7 +348,7 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:
   <!-- Main -->
   <section class="main">
     <header class="topbar">
-      <div class="crumb">fNIRS Motor Task <b id="viewTitle">· Grand Average</b></div>
+      <div class="crumb">fNIRS Motor Task <b id="viewTitle">· Block Average</b></div>
       <div class="spacer"></div>
       <button class="home-btn" id="homeBtn" title="Return to dataset overview">
         <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M2 8l6-5 6 5M4 7v6h8V7"/></svg>
@@ -364,13 +360,13 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:
       <div class="pair-grid" id="pairGrid"></div>
 
       <div class="card plot-card">
-        <div class="card-h"><h3 id="plotTitle">Grand average · Channel 04</h3><span class="meta" id="plotMeta">n = 109 · between-subject SE</span></div>
+        <div class="card-h"><h3 id="plotTitle">Block average · Channel 04</h3><span class="meta" id="plotMeta">n = 109 · between-subject SE</span></div>
         <div class="plot-wrap"><div id="plot" class="plot"></div></div>
       </div>
 
       <div class="card" style="margin-top:14px;" id="miniGridCard">
         <div class="card-h">
-          <h3 id="miniGridTitle">All 13 channels · grand average</h3>
+          <h3 id="miniGridTitle">All 13 channels · block average</h3>
           <span class="meta"><span style="display:inline-block;width:14px;height:2px;background:var(--hbo);vertical-align:middle;margin-right:4px;"></span>HbO &nbsp; <span style="display:inline-block;width:14px;height:2px;background:var(--hbr);vertical-align:middle;margin-right:4px;"></span>HbR &nbsp;·&nbsp; solid = Hand, dashed = Finger</span>
         </div>
         <div class="mini-grid" id="miniGrid"></div>
@@ -378,7 +374,7 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:
 
       <div class="card" id="heatmapCard" style="margin-top:14px;">
         <div class="card-h">
-          <h3 id="heatmapTitle">All channels · grand average · Hand Clenching</h3>
+          <h3 id="heatmapTitle">All channels · block average · Hand Clenching</h3>
           <span class="meta">HbO 01–13 &nbsp;·&nbsp; HbR 01–13</span>
         </div>
         <div id="heatmapPlot" style="width:100%; min-height:300px; padding:6px 6px 2px;"></div>
@@ -446,8 +442,9 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:
         fetchJSON(`${DATA_ROOT}/subjects/${subj}_labels.json`),
       ]);
       const flat = new Float32Array(trialsBuf);
+      const n_trials = flat.length / (N_CH * N_TIMES);   // derive from buffer, not meta
       const trials = [];
-      for (let t = 0; t < N_TRIALS; t++){
+      for (let t = 0; t < n_trials; t++){
         const chans = [];
         for (let c = 0; c < N_CH; c++){
           const start = t*N_CH*N_TIMES + c*N_TIMES;
@@ -669,7 +666,7 @@ function trialSE(entry, ch){
 
 function renderMain(){
   const theme=themeColors();
-  const titles={grand:'Grand Average', subject:'Subject Average'};
+  const titles={grand:'Block Average', subject:'Subject Average'};
   document.getElementById('viewTitle').textContent = '· ' + titles[STATE.view];
   document.getElementById('ctx').textContent = `Channel ${String(STATE.pair).padStart(2,'0')} · HbO/HbR`;
   const ch=STATE.pair-1, chR=ch+13;
@@ -690,7 +687,7 @@ function renderMain(){
   document.getElementById('heatmapTitle').textContent =
     STATE.view==='subject'
       ? `All channels · subject ${M.subjects[STATE.subject]} · Hand Clenching`
-      : `All channels · grand average · Hand Clenching`;
+      : `All channels · block average · Hand Clenching`;
   const hmY=[]; for(let i=0;i<13;i++) hmY.push(`HbO${String(i+1).padStart(2,'0')}`); for(let i=0;i<13;i++) hmY.push(`HbR${String(i+1).padStart(2,'0')}`);
   const hmColor=[[0,'#2563eb'],[0.25,'#1e3a8a'],[0.5,'#141418'],[0.75,'#991b1b'],[1,'#ef4444']];
   Plotly.newPlot(heatEl, [{
@@ -738,7 +735,7 @@ function renderMain(){
   // Title and data source depend on current view
   const inSubject = STATE.view==='subject';
   document.getElementById('miniGridTitle').textContent =
-    `All 13 channels · ${inSubject ? `subject ${M.subjects[STATE.subject]}` : 'grand average'}`;
+    `All 13 channels · ${inSubject ? `subject ${M.subjects[STATE.subject]}` : 'block average'}`;
   const src = inSubject ? FNIRS.subjectAverage(STATE.subject) : FNIRS.grandAvg.mean; // src[cond][ch][i]
 
   setTimeout(()=>{
@@ -813,7 +810,7 @@ function renderInspector(){
   const rows = M.subjects.map((n,i) =>
     `<div class="subj-row ${i===STATE.subject?'active':''}" data-i="${i}"><span class="q"></span><span>${n}</span><span class="amp">#${String(i+1).padStart(3,'0')}</span></div>`
   ).join('');
-  const srcLabel = STATE.view==='subject' ? M.subjects[STATE.subject] : `grand · n=${FNIRS.N_SUBJECTS}`;
+  const srcLabel = STATE.view==='subject' ? M.subjects[STATE.subject] : `block · n=${FNIRS.N_SUBJECTS}`;
   el.innerHTML = `
     <div class="ins-section">
       <h4>Participants (${FNIRS.N_SUBJECTS}) · click to load</h4>
