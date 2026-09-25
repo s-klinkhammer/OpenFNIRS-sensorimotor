@@ -16,8 +16,9 @@ import re
 import shutil
 from pathlib import Path
 
-# TODO: adjust to your derivatives/nirs-preproc folder
-ROOT = Path(r"Documents/GitHub/OpenFNIRS-sensorimotor/data/derivatives/nirs-preproc")
+# Resolved relative to this script's location, so it works no matter
+# which folder you run it from.
+ROOT = Path(__file__).resolve().parent.parent / "data" / "derivatives" / "nirs-preproc"
 GROUP_DIR = ROOT / "group"
 
 PATTERNS = [
@@ -38,6 +39,11 @@ def target_name(filename: str) -> str:
 
 
 def main():
+    if not ROOT.exists():
+        print(f"ROOT not found: {ROOT}")
+        print("Adjust the ROOT path at the top of the script if your folder layout differs.")
+        return
+
     GROUP_DIR.mkdir(exist_ok=True)
     moved = []
 
