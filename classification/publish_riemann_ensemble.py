@@ -114,7 +114,7 @@ def load_dataset(data_path, condition):
     """Stack per-participant npy files into ``(X, y, groups)``."""
     participants = sorted(
         p for p in os.listdir(data_path)
-        if p.startswith("P") and os.path.isdir(os.path.join(data_path, p))
+        if p.startswith("sub-") and os.path.isdir(os.path.join(data_path, p))
     )
     X_list, y_list, g_list = [], [], []
     for p in participants:

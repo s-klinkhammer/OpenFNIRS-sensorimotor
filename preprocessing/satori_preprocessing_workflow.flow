@@ -1,0 +1,287 @@
+{
+    "connections": [
+        {
+            "in_id": "{d36bb060-dd70-4d8f-ae59-a9d00c8c99af}",
+            "in_index": 0,
+            "in_type": "OD",
+            "out_id": "{9042a114-303f-4e61-8092-432f1c280697}",
+            "out_index": 0,
+            "out_type": "OD"
+        },
+        {
+            "in_id": "{889a6e4d-c3e7-4118-8642-658751dfc9bd}",
+            "in_index": 0,
+            "in_type": "CC",
+            "out_id": "{590431b7-2f9e-4c49-924b-cfb467c7dd92}",
+            "out_index": 0,
+            "out_type": "CC"
+        },
+        {
+            "in_id": "{2ec61aeb-f881-4162-b8ee-c02c213ca6a4}",
+            "in_index": 0,
+            "in_type": "CC",
+            "out_id": "{78b21c19-c16a-4f89-8457-9ca0f3297d73}",
+            "out_index": 0,
+            "out_type": "CC"
+        },
+        {
+            "in_id": "{817bec68-8271-4ba2-aef7-384ce5f282b7}",
+            "in_index": 0,
+            "in_type": "CC",
+            "out_id": "{2ec61aeb-f881-4162-b8ee-c02c213ca6a4}",
+            "out_index": 0,
+            "out_type": "CC"
+        },
+        {
+            "in_id": "{22baa007-be33-4a22-bb1f-7b69f9a9d32a}",
+            "in_index": 0,
+            "in_type": "CC",
+            "out_id": "{817bec68-8271-4ba2-aef7-384ce5f282b7}",
+            "out_index": 0,
+            "out_type": "CC"
+        },
+        {
+            "in_id": "{590431b7-2f9e-4c49-924b-cfb467c7dd92}",
+            "in_index": 0,
+            "in_type": "CC",
+            "out_id": "{a667b92a-a22a-48ea-8e18-bedf17b68582}",
+            "out_index": 0,
+            "out_type": "CC"
+        },
+        {
+            "in_id": "{bcbb3536-148d-4a55-a926-951dadd1b3d9}",
+            "in_index": 0,
+            "in_type": "CC",
+            "out_id": "{d36bb060-dd70-4d8f-ae59-a9d00c8c99af}",
+            "out_index": 0,
+            "out_type": "CC"
+        },
+        {
+            "in_id": "{a667b92a-a22a-48ea-8e18-bedf17b68582}",
+            "in_index": 0,
+            "in_type": "CC",
+            "out_id": "{bcbb3536-148d-4a55-a926-951dadd1b3d9}",
+            "out_index": 0,
+            "out_type": "CC"
+        },
+        {
+            "in_id": "{9042a114-303f-4e61-8092-432f1c280697}",
+            "in_index": 0,
+            "in_type": "RAW",
+            "out_id": "{7cd3e465-3f18-47f0-a29b-70b5744e4804}",
+            "out_index": 0,
+            "out_type": "RAW"
+        },
+        {
+            "in_id": "{78b21c19-c16a-4f89-8457-9ca0f3297d73}",
+            "in_index": 0,
+            "in_type": "CC",
+            "out_id": "{889a6e4d-c3e7-4118-8642-658751dfc9bd}",
+            "out_index": 0,
+            "out_type": "CC"
+        }
+    ],
+    "nodes": [
+        {
+            "Parameters": {
+                "DataList": [
+                ]
+            },
+            "id": "{7cd3e465-3f18-47f0-a29b-70b5744e4804}",
+            "model": {
+                "name": "fNIRSLoadRAWModel"
+            },
+            "position": {
+                "x": -1135.848,
+                "y": -669.928
+            }
+        },
+        {
+            "Parameters": {
+            },
+            "id": "{9042a114-303f-4e61-8092-432f1c280697}",
+            "model": {
+                "name": "fNIRSIORawToODModel"
+            },
+            "position": {
+                "x": -661.4559999999999,
+                "y": -671.544
+            }
+        },
+        {
+            "Parameters": {
+            },
+            "id": "{d36bb060-dd70-4d8f-ae59-a9d00c8c99af}",
+            "model": {
+                "name": "fNIRSIOODToConcentrationModel"
+            },
+            "position": {
+                "x": -260.3039999999999,
+                "y": -670.4880000000003
+            }
+        },
+        {
+            "Parameters": {
+                "srinfluencedoubleSpinBox": 0.5,
+                "srinterpolationType": 3,
+                "sriterationsspinBox": 10,
+                "srlagspinBox": 5,
+                "srthreshdoubleSpinBox": 3.5
+            },
+            "id": "{bcbb3536-148d-4a55-a926-951dadd1b3d9}",
+            "model": {
+                "name": "fNIRSSpikeRemovalCCModel"
+            },
+            "position": {
+                "x": -1074.2,
+                "y": -364
+            }
+        },
+        {
+            "Parameters": {
+                "SSRallradioButton": true,
+                "SSRclosestradioButton": false,
+                "SSRcorrradioButton": false,
+                "npcaSSRspinBox": 1,
+                "rssrpcaadioButton": false,
+                "scSpecificChromophoresgroupBox": true,
+                "scdeoxycheckBox": true,
+                "scoxycheckBox": true,
+                "sctotalcheckBox": false
+            },
+            "id": "{590431b7-2f9e-4c49-924b-cfb467c7dd92}",
+            "model": {
+                "name": "fNIRSIOGLMSSRModel"
+            },
+            "position": {
+                "x": -294.80000000000007,
+                "y": -364.4
+            }
+        },
+        {
+            "Parameters": {
+                "restoreHFcheckBox": true
+            },
+            "id": "{a667b92a-a22a-48ea-8e18-bedf17b68582}",
+            "model": {
+                "name": "fNIRSTDDRCCModel"
+            },
+            "position": {
+                "x": -699.8,
+                "y": -365.2
+            }
+        },
+        {
+            "Parameters": {
+                "applyToMotioncheckBox": false,
+                "ptranscheckBox": false,
+                "ztranscheckBox": true
+            },
+            "id": "{78b21c19-c16a-4f89-8457-9ca0f3297d73}",
+            "model": {
+                "name": "fNIRSIONormalizationModel"
+            },
+            "position": {
+                "x": -1083.984,
+                "y": 89.29599999999986
+            }
+        },
+        {
+            "Parameters": {
+                "HPBWcheckBox": true,
+                "HPBWdoubleSpinBox": 0.01,
+                "LPBWcheckBox": false,
+                "LPBWdoubleSpinBox": 0.09,
+                "TFHPFspinBox": 3,
+                "TFHPcheckBox": false,
+                "TFLPFdoubleSpinBox": 0.09,
+                "TFLPcheckBox": true,
+                "addShiftgroupBox": false,
+                "applyToMotioncheckBox": false,
+                "applyToPhysiocheckBox": false,
+                "linearDetrendcheckBox": true,
+                "nrOfShiftsspinBox": 3,
+                "shiftStartdoubleSpinBox": 1,
+                "spacingShiftdoubleSpinBox": 2
+            },
+            "id": "{889a6e4d-c3e7-4118-8642-658751dfc9bd}",
+            "model": {
+                "name": "fNIRSIOFilteringModel"
+            },
+            "position": {
+                "x": 215.59999999999997,
+                "y": -364.79999999999995
+            }
+        },
+        {
+            "Parameters": {
+                "applyToPRTcheckBox": true,
+                "applytoMotioncheckbox": true,
+                "cutaftertriggercheckBox": false,
+                "cutaftertriggerdoubleSpinBox": 20,
+                "cutbeforetriggercheckBox": true,
+                "cutbeforetriggerdoubleSpinBox": 10,
+                "cutbegincheckBox": false,
+                "cutbegindoubleSpinBox": 0,
+                "cutendcheckBox": false,
+                "cutenddoubleSpinBox": 0,
+                "cutlengthfrombegincheckBox": false,
+                "cutlengthfrombegindoubleSpinBox": 0,
+                "cutlengthfromendcheckBox": false,
+                "cutlengthfromenddoubleSpinBox": 0
+            },
+            "id": "{2ec61aeb-f881-4162-b8ee-c02c213ca6a4}",
+            "model": {
+                "name": "fNIRSTRIMDataCCModel"
+            },
+            "position": {
+                "x": -692.7839999999999,
+                "y": 89.4959999999999
+            }
+        },
+        {
+            "Parameters": {
+                "applyToPRTcheckBox": true,
+                "applytoMotioncheckbox": true,
+                "cutaftertriggercheckBox": true,
+                "cutaftertriggerdoubleSpinBox": 20,
+                "cutbeforetriggercheckBox": false,
+                "cutbeforetriggerdoubleSpinBox": 10,
+                "cutbegincheckBox": false,
+                "cutbegindoubleSpinBox": 0,
+                "cutendcheckBox": false,
+                "cutenddoubleSpinBox": 0,
+                "cutlengthfrombegincheckBox": false,
+                "cutlengthfrombegindoubleSpinBox": 0,
+                "cutlengthfromendcheckBox": false,
+                "cutlengthfromenddoubleSpinBox": 0
+            },
+            "id": "{817bec68-8271-4ba2-aef7-384ce5f282b7}",
+            "model": {
+                "name": "fNIRSTRIMDataCCModel"
+            },
+            "position": {
+                "x": -250.96000000000004,
+                "y": 89.03999999999999
+            }
+        },
+        {
+            "Parameters": {
+                "directorylineEdit": "Z:/",
+                "extDirgroupBox": true,
+                "onlyCCcheckBox": false,
+                "suffixgroupBox": true,
+                "suffixlineEdit": "_PPT"
+            },
+            "id": "{22baa007-be33-4a22-bb1f-7b69f9a9d32a}",
+            "model": {
+                "name": "fNIRSCCSaveModel"
+            },
+            "position": {
+                "x": 212.11199999999985,
+                "y": 89.71199999999999
+            }
+        }
+    ],
+    "version": 1.7999999523162842
+}
