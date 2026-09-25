@@ -1,4 +1,4 @@
-name: respra
+name: openfnirs
 channels:
   - conda-forge
   - defaults

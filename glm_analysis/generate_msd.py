@@ -21,7 +21,15 @@ from pathlib import Path
 
 # This script lives in glm_analysis/, so the repo root is one level up.
 ROOT_DIR = Path(__file__).resolve().parent.parent
-DERIVATIVES_PATH = ROOT_DIR / "data" / "derivatives" / "nirs-preproc"
+
+# --- Flexible BIDS Directory Detection ---
+DATA_BASE = ROOT_DIR / "data"
+if (DATA_BASE / "bids_fnirs_sensorimotor_dataset").exists():
+    BIDS_DIR = DATA_BASE / "bids_fnirs_sensorimotor_dataset"
+else:
+    BIDS_DIR = DATA_BASE
+
+DERIVATIVES_PATH = BIDS_DIR / "derivatives" / "nirs-preproc"
 
 # Written into data/ (already gitignored) since it embeds this machine's
 # absolute paths and should never be committed.

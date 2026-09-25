@@ -25,7 +25,17 @@ warnings.filterwarnings("ignore")
 
 # This script lives in classification/, so the repo root is one level up.
 ROOT_DIR = Path(__file__).resolve().parent.parent
-DERIVATIVES_PATH = ROOT_DIR / "data" / "derivatives" / "nirs-preproc"
+
+# --- Flexible BIDS Directory Detection ---
+DATA_BASE = ROOT_DIR / "data"
+
+# Check if extracted Zenodo subfolder exists, otherwise fall back to data/
+if (DATA_BASE / "bids_fnirs_sensorimotor_dataset").exists():
+    BIDS_DIR = DATA_BASE / "bids_fnirs_sensorimotor_dataset"
+else:
+    BIDS_DIR = DATA_BASE
+
+DERIVATIVES_PATH = BIDS_DIR / "derivatives" / "nirs-preproc"
 OUTPUT_DIR = ROOT_DIR / "data"
 
 CONDITION_LABEL = "SD"

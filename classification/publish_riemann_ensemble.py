@@ -59,6 +59,14 @@ warnings.filterwarnings("ignore")
 
 # This script lives in classification/, so the repo root is one level up.
 ROOT_DIR = Path(__file__).resolve().parent.parent
+
+# --- Flexible BIDS Directory Detection ---
+DATA_BASE = ROOT_DIR / "data"
+if (DATA_BASE / "bids_fnirs_sensorimotor_dataset").exists():
+    BIDS_DIR = DATA_BASE / "bids_fnirs_sensorimotor_dataset"
+else:
+    BIDS_DIR = DATA_BASE
+
 DATA_PATH = str(ROOT_DIR / "data")
 PUBLISH_OUTPUT_DIR = str(ROOT_DIR / "results" / "publish_ensemble")
 CONDITION = "SD"

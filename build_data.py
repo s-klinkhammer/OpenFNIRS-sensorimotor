@@ -27,7 +27,14 @@ import h5py
 import numpy as np
 
 ROOT = Path(__file__).resolve().parent
-BIDS = ROOT / "data"
+
+# --- Flexible BIDS Directory Detection ---
+DATA_BASE = ROOT / "data"
+if (DATA_BASE / "bids_fnirs_sensorimotor_dataset").exists():
+    BIDS = DATA_BASE / "bids_fnirs_sensorimotor_dataset"
+else:
+    BIDS = DATA_BASE
+
 DERIV = BIDS / "derivatives" / "nirs-preproc"
 OUT = ROOT / "public" / "data"
 SUBJECTS_OUT = OUT / "subjects"

@@ -18,7 +18,16 @@ from pathlib import Path
 
 # Resolved relative to this script's location, so it works no matter
 # which folder you run it from.
-ROOT = Path(__file__).resolve().parent.parent / "data" / "derivatives" / "nirs-preproc"
+ROOT_DIR = Path(__file__).resolve().parent.parent
+
+# --- Flexible BIDS Directory Detection ---
+DATA_BASE = ROOT_DIR / "data"
+if (DATA_BASE / "bids_fnirs_sensorimotor_dataset").exists():
+    BIDS_DIR = DATA_BASE / "bids_fnirs_sensorimotor_dataset"
+else:
+    BIDS_DIR = DATA_BASE
+
+ROOT = BIDS_DIR / "derivatives" / "nirs-preproc"
 GROUP_DIR = ROOT / "group"
 
 PATTERNS = [
