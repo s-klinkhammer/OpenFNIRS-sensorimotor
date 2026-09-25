@@ -12,6 +12,7 @@ dependencies:
   - seaborn
   - tqdm
   - joblib
+  - h5py
   - pip
   - pip:
     - pyriemann
