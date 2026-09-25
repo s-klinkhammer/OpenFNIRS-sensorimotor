@@ -4,6 +4,26 @@ This folder contains the complete fNIRS preprocessing workflow used to transform
 
 ---
 
+## 📦 Data Availability
+
+This workflow starts from the **raw** data, which are hosted on Zenodo (DOI: **TODO — add your Zenodo DOI/link here**) alongside the derivatives.
+
+To reproduce this step:
+
+1. Download the raw data archive from Zenodo and unzip it anywhere on your machine.
+2. Open `satori_preprocessing_workflow.flow` in Satori (v2.2.4).
+3. In the **Load RAW fNIRS Dataset** node, point it to your unzipped raw data folder.
+4. In the **Save Dataset CC** node, set the output directory to where you want the
+   derivatives written — for compatibility with the classification pipeline,
+   this should be `data/derivatives/nirs-preproc/` at the repository root
+   (see `classification/classification_readme.md`).
+
+Note: unlike the classification scripts, Satori does not auto-detect paths —
+both the input and output directories are set manually inside the app, as
+shown in the graph below.
+
+---
+
 ## 📐 Preprocessing Workflow Overview
 
 The raw intensity fNIRS data undergoes conversion to optical density (OD), concentration changes via the Modified Beer-Lambert Law (MBLL), motion artifact correction, systemic noise regression, frequency filtering, normalization, and data trimming.

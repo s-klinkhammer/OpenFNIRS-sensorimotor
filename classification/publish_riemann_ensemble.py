@@ -29,6 +29,7 @@ from __future__ import annotations
 import os
 import warnings
 from datetime import datetime
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -56,8 +57,10 @@ warnings.filterwarnings("ignore")
 # Configuration
 # ============================================================================
 
-DATA_PATH = "data"
-PUBLISH_OUTPUT_DIR = "results/publish_ensemble"
+# This script lives in classification/, so the repo root is one level up.
+ROOT_DIR = Path(__file__).resolve().parent.parent
+DATA_PATH = str(ROOT_DIR / "data")
+PUBLISH_OUTPUT_DIR = str(ROOT_DIR / "results" / "publish_ensemble")
 CONDITION = "SD"
 
 SAMPLING_RATE_HZ = 10.2
@@ -125,6 +128,12 @@ def load_dataset(data_path, condition):
         X_list.append(np.load(Xp))
         y_list.append(np.load(yp).astype(int))
         g_list.extend([p] * len(y_list[-1]))
+    if not X_list:
+        raise FileNotFoundError(
+            f"No '{condition}' feature files found under '{data_path}'. "
+            "Run classification/generate_npy.py first (it needs the Zenodo "
+            "derivatives in data/derivatives/nirs-preproc/ — see README)."
+        )
     X = np.concatenate(X_list, axis=0).astype(np.float64)
     y = np.concatenate(y_list)
     classes = np.unique(y)

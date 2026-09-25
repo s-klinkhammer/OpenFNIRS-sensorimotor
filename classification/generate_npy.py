@@ -23,7 +23,8 @@ warnings.filterwarnings("ignore")
 # Configuration
 # ============================================================================
 
-ROOT_DIR = Path(__file__).resolve().parent
+# This script lives in classification/, so the repo root is one level up.
+ROOT_DIR = Path(__file__).resolve().parent.parent
 DERIVATIVES_PATH = ROOT_DIR / "data" / "derivatives" / "nirs-preproc"
 OUTPUT_DIR = ROOT_DIR / "data"
 
@@ -157,6 +158,8 @@ def process_participant(sub_id: str, derivatives_path: Path, output_dir: Path) -
 def main():
     if not DERIVATIVES_PATH.exists():
         print(f"Error: BIDS derivatives directory not found at '{DERIVATIVES_PATH}'")
+        print("Download the derivatives from Zenodo (see README) and unzip them")
+        print(f"so that this path exists: {DERIVATIVES_PATH}")
         sys.exit(1)
 
     participants = sorted(
