@@ -22,8 +22,14 @@ data, followed by one Python script that combines their outputs.
 
 Note: like `preprocessing/`, Satori does not auto-detect paths — you set the
 input and output folders manually inside each node's UI, as described below.
-Using the exact folder names below means `compute_snr_cv.py` will find
-everything without any path arguments afterwards.
+`compute_snr_cv.py` uses the same flexible BIDS-folder detection as the
+other scripts in this repo: if `data/bids_fnirs_sensorimotor_dataset/`
+exists, it looks for `trim_raw`/`trim_od` inside
+`data/bids_fnirs_sensorimotor_dataset/derivatives/quality/`; otherwise
+directly under `data/derivatives/quality/`. Use whichever of those two
+matches your layout as the Save node's output directory below — either
+works, but don't mix them (e.g. don't save some subjects to one and some to
+the other).
 
 **No batch mode:** confirmed as of Satori v2.2.4, the Load node's file
 dialog only lets you select files within a single subject folder, and
@@ -50,6 +56,8 @@ docstring for why.
    ```
    data/derivatives/quality/trim_raw/
    ```
+   (or `data/bids_fnirs_sensorimotor_dataset/derivatives/quality/trim_raw/`
+   if that's the layout you have — see the note above.)
 5. Repeat steps 2–4 for the next subject.
 
 ### Branch B — trimmed OD + SCI (`Trim_OD.flow` → `SCI.flow`)
@@ -59,6 +67,8 @@ docstring for why.
    ```
    data/derivatives/quality/trim_od/
    ```
+   (or `data/bids_fnirs_sensorimotor_dataset/derivatives/quality/trim_od/`
+   — same note as above.)
 2. Open `quality/SCI.flow`, load that subject's trimmed OD output from step
    1, and run it (SCI Channel Rejection, threshold 1.0). This exports one
    `<filename>_OD_rejectedChannels_SCI.txt` per input file, containing the

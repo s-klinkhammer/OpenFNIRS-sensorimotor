@@ -37,8 +37,16 @@ from snirf_io import load_snirf
 # This script lives in quality/, so the repo root is one level up.
 ROOT_DIR = Path(__file__).resolve().parent.parent
 
-DEFAULT_SNIRF_DIR = ROOT_DIR / "data" / "derivatives" / "quality" / "trim_raw"
-DEFAULT_SCI_DIR = ROOT_DIR / "data" / "derivatives" / "quality" / "trim_od"
+# --- Flexible BIDS Directory Detection (same pattern as build_data.py,
+# classification/generate_npy.py, glm_analysis/generate_msd.py) ---
+DATA_BASE = ROOT_DIR / "data"
+if (DATA_BASE / "bids_fnirs_sensorimotor_dataset").exists():
+    BIDS_DIR = DATA_BASE / "bids_fnirs_sensorimotor_dataset"
+else:
+    BIDS_DIR = DATA_BASE
+
+DEFAULT_SNIRF_DIR = BIDS_DIR / "derivatives" / "quality" / "trim_raw"
+DEFAULT_SCI_DIR = BIDS_DIR / "derivatives" / "quality" / "trim_od"
 DEFAULT_OUT_DIR = ROOT_DIR / "results" / "quality"
 
 # Parameters per Raible et al.
