@@ -10,7 +10,8 @@ the metrics themselves are then computed in Python from Satori's exports.
 ## 📦 Data Availability
 
 This step starts from the **raw** data, same as `preprocessing/` — see
-`preprocessing/preprocessing_readme.md` for where to get it from Zenodo.
+"Getting the data" in the top-level `README.md`. No separate download: the
+raw `sub-XXX/nirs/` folders under `data/` are the same ones used there.
 
 ---
 
@@ -24,28 +25,46 @@ input and output folders manually inside each node's UI, as described below.
 Using the exact folder names below means `compute_snr_cv.py` will find
 everything without any path arguments afterwards.
 
+**No batch mode:** confirmed as of Satori v2.2.4, the Load node's file
+dialog only lets you select files within a single subject folder, and
+there's no way to queue multiple subjects or run a `.flow` workflow across
+`sub-XXX` folders automatically. Both branches below have to be repeated
+per subject (Load → Run → Save, then move to the next `sub-XXX` folder) —
+for N = 100 subjects that's ~100 repetitions per branch.
+
+**Optional:** `../flatten_raw_for_satori.py` (repo root) copies every
+subject's raw `.snirf` file into one flat `data/raw_flat/` folder, so the
+Load node's file dialog can show and select across all subjects at once
+instead of navigating into each `sub-XXX/nirs/` folder — point both
+branches' Load nodes at `data/raw_flat/` instead of the nested BIDS folders
+if you use it. Test with a handful of subjects first; see the script's
+docstring for why.
+
 ### Branch A — trimmed raw intensity (`Trim.flow`)
 1. Open `quality/Trim.flow` in Satori.
-2. In the **Load RAW fNIRS Dataset** node, point it to your raw data folder.
+2. In the **Load RAW fNIRS Dataset** node, point it to one subject's raw
+   `sub-XXX/nirs/` folder.
 3. Run the workflow (Load → Trim: cuts 10 s before the first trigger, 20 s
    after the last — same window as the main preprocessing pipeline).
 4. Export/save the trimmed RAW `.snirf` output into:
    ```
    data/derivatives/quality/trim_raw/
    ```
+5. Repeat steps 2–4 for the next subject.
 
 ### Branch B — trimmed OD + SCI (`Trim_OD.flow` → `SCI.flow`)
-1. Open `quality/Trim_OD.flow` in Satori, point the Load node at the same raw
-   data folder, and run it (Load → Trim → Raw→OD → Save, suffix `_Satori`).
-   Set the Save node's output directory to:
+1. Open `quality/Trim_OD.flow` in Satori, point the Load node at one
+   subject's raw `sub-XXX/nirs/` folder, and run it (Load → Trim → Raw→OD →
+   Save, suffix `_Satori`). Set the Save node's output directory to:
    ```
    data/derivatives/quality/trim_od/
    ```
-2. Open `quality/SCI.flow`, load the trimmed OD output from step 1, and run
-   it (SCI Channel Rejection, threshold 1.0). This exports one
+2. Open `quality/SCI.flow`, load that subject's trimmed OD output from step
+   1, and run it (SCI Channel Rejection, threshold 1.0). This exports one
    `<filename>_OD_rejectedChannels_SCI.txt` per input file, containing the
    per-channel SCI values — save these into the same
    `data/derivatives/quality/trim_od/` folder, alongside the OD files.
+3. Repeat steps 1–2 for the next subject.
 
 ### Combine into quality metrics (`compute_snr_cv.py`)
 Once both branches have been run for all subjects:
@@ -89,3 +108,4 @@ at least usable; otherwise `review_or_reject`.
   (deliberately doesn't depend on `snirf`/`mne-nirs` — see its docstring).
 * **`compute_snr_cv.py`**: combines both branches into the final quality CSVs.
 * **`quality_readme.md`**: this file.
+* **`../flatten_raw_for_satori.py`** (repo root): optional helper that copies all subjects' raw files into one flat folder, see the note above.

@@ -8,11 +8,9 @@ since it's a click-based interface rather than a node graph).
 
 ## 📦 Data Availability
 
-This step takes the same preprocessed derivatives as the classification
-pipeline. If you haven't already, download them from Zenodo (DOI: **TODO —
-add your Zenodo DOI/link here**) and unzip them into `data/derivatives/nirs-preproc/`
-at the repository root — see `classification/classification_readme.md` for
-the exact layout.
+This step uses the same `derivatives/nirs-preproc/` folder as the
+classification pipeline — see "Getting the data" in the top-level
+`README.md` for how to get it in place.
 
 ---
 

@@ -6,28 +6,14 @@ This directory contains the machine learning pipeline used for feature extractio
 
 ## 📦 Data Availability
 
-The preprocessed derivatives are hosted on Zenodo (DOI: **TODO — add your Zenodo DOI/link here**) rather than in this repository.
+See "Getting the data" in the top-level `README.md`: download the full BIDS
+dataset from Zenodo and unzip it into `data/` at the repository root. This
+pipeline only reads the `derivatives/nirs-preproc/` part of it — the raw
+`sub-XXX` folders can be there too, they're just not used here.
 
-To reproduce the results:
-
-1. Download the derivatives archive from Zenodo.
-2. Unzip it into the **repository root** (not into `classification/`) so that the following path exists:
-   ```
-   OpenFNIRS-sensorimotor/          <- repo root
-   ├── data/
-   │   └── derivatives/
-   │       └── nirs-preproc/
-   │           └── sub-001/nirs/*.snirf
-   │           └── sub-002/nirs/*.snirf
-   │           └── ...
-   ├── classification/
-   │   ├── generate_npy.py
-   │   └── publish_riemann_ensemble.py
-   └── ...
-   ```
-3. Run the scripts below from anywhere — both scripts locate the repo root
-   automatically (relative to their own file location), so no path
-   arguments or manual configuration are needed.
+Run the scripts below from anywhere — both scripts locate the repo root and
+the data folder automatically (relative to their own file location), so no
+path arguments or manual configuration are needed.
 
 ---
 
