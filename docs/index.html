@@ -43,7 +43,7 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:
 .landing-nav a{color:var(--text-dim); text-decoration:none; padding:5px 10px; border-radius:6px; transition:all 120ms; font-size:12.5px; cursor:pointer;}
 .landing-nav a:hover{color:var(--text); background:var(--panel-2);}
 
-.landing-hero{flex:1; display:grid; grid-template-columns: 1.15fr 1fr; gap:48px; align-items:center; padding:20px 64px 60px; min-height:580px; max-width:1440px; margin:0 auto; width:100%;}
+.landing-hero{flex:1 0 auto; display:grid; grid-template-columns: 1.15fr 1fr; gap:48px; align-items:center; padding:20px 64px 60px; min-height:580px; max-width:1440px; margin:0 auto; width:100%;}
 .lh-body{min-width:0;}
 .lh-eyebrow{display:inline-flex; align-items:center; gap:8px; padding:4px 11px 4px 9px; border-radius:999px; background:var(--panel); border:1px solid var(--border); font-size:11px; font-weight:600; letter-spacing:0.04em; color:var(--text-dim); text-transform:uppercase; margin-bottom:20px;}
 .lh-eyebrow i{width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow:0 0 0 3px rgba(48,209,88,0.15);}
@@ -213,8 +213,8 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:
     <div class="brand">fNIRS Motor Task</div>
     <div class="push"></div>
     <a href="#" id="goExplore">Explore data</a>
-    <a href="https://google.com" target="_blank" rel="noopener">Download data</a>
-    <a href="https://google.com" target="_blank" rel="noopener">Paper</a>
+    <a href="https://zenodo.org/records/22911602" target="_blank" rel="noopener">Download data</a>
+    <!-- TODO: re-enable once the paper DOI exists: <a href="PAPER-DOI-URL" target="_blank" rel="noopener">Paper</a> -->
   </nav>
 
   <section class="landing-hero">
@@ -247,14 +247,15 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:
           Explore data
           <span class="lh-kbd" style="background:rgba(0,0,0,0.12); color:inherit; opacity:0.55;">↵</span>
         </button>
-        <a class="lh-btn ghost" href="https://google.com" target="_blank" rel="noopener">
+        <a class="lh-btn ghost" href="https://zenodo.org/records/22911602" target="_blank" rel="noopener">
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 2v9M4 7l4 4 4-4M2 14h12"/></svg>
           Download data
         </a>
-        <a class="lh-btn ghost" href="https://google.com" target="_blank" rel="noopener">
+        <!-- TODO: re-enable once the paper DOI exists (replace PAPER-DOI-URL):
+        <a class="lh-btn ghost" href="PAPER-DOI-URL" target="_blank" rel="noopener">
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 2h7l3 3v9H3z" stroke-linejoin="round"/><path d="M10 2v3h3M5 8h6M5 11h6"/></svg>
           Paper
-        </a>
+        </a> -->
       </div>
       <div class="lh-stats">
         <div class="lh-stat"><div class="n" id="statSubjects">109</div><div class="l">Participants</div></div>
