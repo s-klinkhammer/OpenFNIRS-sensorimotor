@@ -93,6 +93,22 @@ This writes `meta.json`, `grand_avg.json`, `subject_avg.bin`, and one
 > some other way (symlink, copy step, build tool), double-check that —
 > otherwise re-running this script won't update the live dashboard.
 
+## ID extension (increased density)
+
+The folders in the repository root contain the analyses of the standard-density (SD)
+dataset as released in v1.0.0 and remain unchanged.
+
+The folder `id-extension/` contains the scripts for data preparation and analysis of the comparison
+between standard-density (SD; 5x5) and increased-density (ID; 8x8) configurations, where SD is a 
+subset of ID (reduced by computationally removing some optodes and corresponding channels):
+
+| Path | Purpose |
+|---|---|
+| `id-extension/data_prep_pipeline/` | BIDSification of ID and SD data, Satori preprocessing flow |
+| `id-extension/quality_pipeline/` | Signal quality (SNR, CV) and SD vs. ID comparison |
+| `id-extension/roi_glm_pipeline/` | Single-subject GLM and motor-channel analyses |
+| `id-extension/sdid_pipeline/` | Full SD vs. ID pipeline (`run_all.py`, steps 01-08) |
+
 ## Acknowledgments
 
 Parts of the code in this repository (documentation, repository structure,
