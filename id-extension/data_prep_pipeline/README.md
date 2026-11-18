@@ -89,6 +89,17 @@ Used in steps 2 and 4. Excel file with a column named `exclude` that contains th
 
 Used in step 2. Excel file with an ID column (`participant_id`, `id` or `subject`; otherwise the first column is used) and the columns `age`, `sex` (`f`/`m`) and `handedness` (`right`/`left`).
 
+## Channel mapping between SD and ID
+
+The SD dataset was created by computationally removing optodes from ID, and Satori
+renumbers channels automatically when optodes are removed. Channel numbers therefore
+differ between SD and ID (e.g. SD CH 4 = S2-D3 corresponds to ID CH 6 = S3-D5).
+
+`channel_mapping.tsv` lists, for each of the 13 SD channels, the corresponding ID channel
+(matched via source-detector pair). Channel-wise results of shared channels are identical
+in both datasets, since all preprocessing steps operate channel-wise and the same
+short-separation channel was used in both configurations.
+
 ## Citation and contact
 
 Citation: *[to be added]*. Contact: Bettina Sorger, Maastricht University (b.sorger@maastrichtuniversity.nl).
