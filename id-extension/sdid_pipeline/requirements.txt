@@ -1,0 +1,12 @@
+numpy
+pandas
+scipy
+statsmodels
+scikit-learn
+pyriemann
+mne
+mne-nirs
+matplotlib
+openpyxl
+python-docx
+tqdm

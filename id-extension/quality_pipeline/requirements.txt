@@ -1,0 +1,8 @@
+numpy>=2.0
+scipy
+pandas
+h5py
+matplotlib
+seaborn
+pillow
+jupyter

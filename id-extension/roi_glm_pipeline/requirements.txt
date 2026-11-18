@@ -1,0 +1,3 @@
+numpy
+openpyxl
+python-docx   # optional, only for the .docx output of 04_generate_paper_results.py
